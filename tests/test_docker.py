@@ -1,11 +1,12 @@
 """Tests for all docker functions."""
-from unittest import IsolatedAsyncioTestCase, main as run_tests
 from pathlib import Path
+from unittest import IsolatedAsyncioTestCase, main as run_tests
 
-from algobattle.program import Generator, Solver
 from algobattle.match import AlgobattleConfig, MatchConfig, RunConfig
+from algobattle.program import Generator, Solver
+
 from . import testsproblem
-from .testsproblem.problem import TestProblem, TestInstance, TestSolution
+from .testsproblem.problem import TestInstance, TestProblem, TestSolution
 
 
 class ProgramTests(IsolatedAsyncioTestCase):

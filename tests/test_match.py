@@ -1,23 +1,24 @@
 """Tests for the Match class."""
 # pyright: reportMissingSuperCall=false
+from pathlib import Path
 from typing import Any
 from unittest import IsolatedAsyncioTestCase, TestCase, main
-from pathlib import Path
 
 from pydantic import ByteSize, ValidationError
 
-from algobattle.battle import Fight, Iterated, Averaged, ProgramRunInfo
+from algobattle.battle import Averaged, Fight, Iterated, ProgramRunInfo
 from algobattle.match import (
+    AlgobattleConfig,
     DynamicProblemConfig,
+    Match,
+    MatchConfig,
     MatchupStr,
     ProjectConfig,
-    Match,
-    AlgobattleConfig,
-    MatchConfig,
     RunConfig,
     TeamInfo,
 )
-from algobattle.program import Team, Matchup, TeamHandler
+from algobattle.program import Matchup, Team, TeamHandler
+
 from .testsproblem.problem import TestProblem
 
 

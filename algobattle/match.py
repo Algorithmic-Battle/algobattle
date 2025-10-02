@@ -1,4 +1,5 @@
 """Module defining how a match is run."""
+
 import tomllib
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -583,7 +584,7 @@ class MatchConfig(BaseModel):
 
     problem: str
     """The problem this match is over."""
-    build_timeout: WithNone[TimeDeltaFloat] = 600
+    build_timeout: WithNone[TimeDeltaFloat] = 600.0
     """Timeout for building each docker image."""
     max_program_size: WithNone[ByteSizeInt] = 4_000_000_000
     """Maximum size a built program image is allowed to be."""
@@ -656,15 +657,20 @@ class TeamInfo(BaseModel):
 TeamInfos: TypeAlias = dict[str, TeamInfo]
 
 
+def _empty_default() -> Any:
+    """Helper to make a structure that gets parsed to a default pydantic struct while passing type checking."""
+    return {}
+
+
 class AlgobattleConfig(BaseModel):
     """Base that contains all config options and can be parsed from config files."""
 
     # funky defaults to force their validation with context info present
     teams: TeamInfos = Field(default_factory=dict)
-    project: ProjectConfig = Field(default_factory=ProjectConfig)
+    project: ProjectConfig = Field(default_factory=_empty_default, validate_default=True)
     match: MatchConfig
     docker: DockerConfig = DockerConfig()
-    problem: DynamicProblemConfig = Field(default_factory=DynamicProblemConfig)
+    problem: DynamicProblemConfig = Field(default_factory=_empty_default, validate_default=True)
 
     model_config = ConfigDict(revalidate_instances="always")
 

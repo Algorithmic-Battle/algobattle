@@ -100,7 +100,7 @@ class _General(BaseModel):
 
 
 class CliConfig(BaseModel):
-    general: _General = Field(default_factory=_General)
+    general: _General = Field(default_factory=_General, validate_default=True)
     default_project_table: ProjectConfig | None = Field(default=None)
 
     _doc: TOMLDocument

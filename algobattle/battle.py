@@ -90,7 +90,7 @@ class ProgramRunInfo(BaseModel):
     """Data about a program's execution."""
 
     runtime: float = 0
-    overriden: RunConfigOverride = Field(default_factory=RunConfigOverride)
+    overriden: RunConfigOverride = Field(default_factory=RunConfigOverride, validate_default=True)
     error: ExceptionInfo | None = None
     battle_data: SerializeAsAny[EncodableModel] | None = None
     instance: SerializeAsAny[InstanceModel] | None = None

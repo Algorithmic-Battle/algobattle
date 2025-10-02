@@ -4,8 +4,9 @@ from enum import StrEnum
 from functools import cached_property
 from pathlib import Path
 from typing import Literal
-from typing_extensions import TypedDict
+
 from jinja2 import Environment, PackageLoader, Template
+from typing_extensions import TypedDict
 
 
 class Language(StrEnum):
@@ -66,10 +67,9 @@ def write_templates(target: Path, lang: Language, args: TemplateArgs) -> None:
         formatted_path = Path(Template(name).render(template_args))
         if formatted_path.suffix == ".jinja":
             formatted_path = formatted_path.with_suffix("")
-
-        (target / formatted_path).parent.mkdir(parents=True, exist_ok=True)
-        with open(target / formatted_path, "w+") as file:
-            file.write(formatted)
+        full_path = target / formatted_path
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+        full_path.write_text(formatted)
 
 
 problem_env = Environment(

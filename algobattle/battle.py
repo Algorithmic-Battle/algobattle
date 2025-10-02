@@ -3,10 +3,11 @@
 This module contains the :class:`Battle` class, which speciefies how each type of battle is fought and scored,
 some basic battle types, and related classed.
 """
+from abc import abstractmethod
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from enum import StrEnum
 from importlib.metadata import entry_points
-from abc import abstractmethod
 from inspect import isclass
 from itertools import count
 from pathlib import Path
@@ -16,7 +17,6 @@ from typing import (
     Annotated,
     Any,
     ClassVar,
-    Iterable,
     Literal,
     ParamSpec,
     Protocol,
@@ -26,9 +26,8 @@ from typing import (
     Unpack,
     overload,
 )
-from typing_extensions import TypedDict
-from annotated_types import Ge
 
+from annotated_types import Ge
 from pydantic import (
     ConfigDict,
     Field,
@@ -39,11 +38,10 @@ from pydantic import (
     ValidatorFunctionWrapHandler,
 )
 from pydantic_core import CoreSchema
-from pydantic_core.core_schema import (
-    tagged_union_schema,
-    with_info_wrap_validator_function,
-)
+from pydantic_core.core_schema import tagged_union_schema, with_info_wrap_validator_function
+from typing_extensions import TypedDict
 
+from algobattle.problem import InstanceModel, Problem, SolutionModel
 from algobattle.program import (
     Generator,
     GeneratorResult,
@@ -53,15 +51,7 @@ from algobattle.program import (
     Solver,
     SolverResult,
 )
-from algobattle.problem import InstanceModel, Problem, SolutionModel
-from algobattle.util import (
-    Encodable,
-    EncodableModel,
-    ExceptionInfo,
-    BaseModel,
-    Role,
-)
-
+from algobattle.util import BaseModel, Encodable, EncodableModel, ExceptionInfo, Role
 
 _BattleConfig: TypeAlias = Any
 """Type alias used to generate correct typings when subclassing :class:`Battle`.
@@ -73,7 +63,7 @@ the new battle type directly.
 """
 T = TypeVar("T")
 P = ParamSpec("P")
-Type = type
+_type = type
 
 
 class ProgramLogConfigTime(StrEnum):
@@ -91,7 +81,7 @@ class ProgramLogConfigLocation(StrEnum):
     inline = "inline"
 
 
-class ProgramLogConfigView(Protocol):  # noqa: D101
+class ProgramLogConfigView(Protocol):
     when: ProgramLogConfigTime = ProgramLogConfigTime.error
     output: ProgramLogConfigLocation = ProgramLogConfigLocation.inline
 
@@ -100,7 +90,7 @@ class ProgramRunInfo(BaseModel):
     """Data about a program's execution."""
 
     runtime: float = 0
-    overriden: RunConfigOverride = Field(default_factory=dict)
+    overriden: RunConfigOverride = Field(default_factory=RunConfigOverride)
     error: ExceptionInfo | None = None
     battle_data: SerializeAsAny[EncodableModel] | None = None
     instance: SerializeAsAny[InstanceModel] | None = None
@@ -177,7 +167,7 @@ class FightUi(ProgramUi, Protocol):
         """Informs the ui that the fight has finished running and has been added to the battle's `.fight_results`."""
 
 
-class RunKwargs(TypedDict, total=False):
+class RunKwargs(TypedDict, total=False, closed=True):
     """The keyword arguments used by the FightHandler.run family of functions."""
 
     timeout_generator: float | None
@@ -394,7 +384,7 @@ class Battle(BaseModel):
         """Type of battle that will be used."""
 
         @classmethod
-        def __get_pydantic_core_schema__(cls, source: Type, handler: GetCoreSchemaHandler) -> CoreSchema:
+        def __get_pydantic_core_schema__(cls, source: _type, handler: GetCoreSchemaHandler) -> CoreSchema:
             # there's two bugs we need to catch:
             # 1. this function is called during the pydantic BaseModel metaclass's __new__, so the BattleConfig class
             # won't be ready at that point and be missing in the namespace
@@ -446,7 +436,7 @@ class Battle(BaseModel):
                         installed = ", ".join(b.name() for b in Battle._battle_types.values())
                         raise ValueError(
                             f"The specified battle type '{passed}' is not installed. Installed types are: {installed}"
-                        )
+                        ) from e
 
             return with_info_wrap_validator_function(check_installed, subclass_schema)
 
@@ -459,7 +449,7 @@ class Battle(BaseModel):
 
         if TYPE_CHECKING:
             # to hint that we're gonna fill this with arbitrary data belonging to some supposed battle type
-            def __getattr__(self, __attr: str) -> Any:
+            def __getattr__(self, attr: str, /) -> Any:
                 ...
 
     class UiData(BaseModel):
@@ -560,7 +550,7 @@ class Iterated(Battle):
         exit after that many failures, or `"unlimited"` to never exit early.
         """
 
-    class UiData(Battle.UiData):  # noqa: D106
+    class UiData(Battle.UiData):
         reached: list[int]
         cap: int
         note: str
@@ -620,7 +610,7 @@ class Iterated(Battle):
         return 0 if len(self.results) == 0 else sum(self.results) / len(self.results)
 
     @staticmethod
-    def format_score(score: float) -> str:  # noqa: D102
+    def format_score(score: float) -> str:
         return str(int(score))
 
 
@@ -637,7 +627,7 @@ class Averaged(Battle):
         num_fights: int = 10
         """Number of iterations in each round."""
 
-    class UiData(Battle.UiData):  # noqa: D106
+    class UiData(Battle.UiData):
         round: int
 
     async def run_battle(self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi) -> None:
@@ -659,7 +649,7 @@ class Averaged(Battle):
             return sum(f.score for f in self.fights) / len(self.fights)
 
     @staticmethod
-    def format_score(score: float) -> str:  # noqa: D102
+    def format_score(score: float) -> str:
         return format(score, ".0%")
 
 
@@ -681,7 +671,7 @@ class FightHistory(Encodable):
     gen_sols: set[Role]
     sol_sols: set[Role]
 
-    def encode(self, target: Path, role: Role) -> None:  # noqa: D102
+    def encode(self, target: Path, role: Role) -> None:
         target.mkdir()
         for i, fight in enumerate(self.history):
             fight_dir = target / str(i)
@@ -724,7 +714,7 @@ class Improving(Battle):
         solver_solutions: set[Role] = {Role.solver}
         """Who to show the solver's solutions to."""
 
-    class UiData(Battle.UiData):  # noqa: D106
+    class UiData(Battle.UiData):
         round: int
 
     async def run_battle(self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi) -> None:
@@ -760,5 +750,5 @@ class Improving(Battle):
             return total / quotient
 
     @staticmethod
-    def format_score(score: float) -> str:  # noqa: D102
+    def format_score(score: float) -> str:
         return format(score, ".0%")

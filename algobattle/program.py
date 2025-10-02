@@ -1,30 +1,33 @@
 """Module providing an interface to interact with the teams' programs."""
+
+import json
 from abc import ABC, abstractmethod
+from collections.abc import Generator as PyGenerator, Iterable, Iterator, Mapping
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from itertools import combinations
 from os import environ
 from pathlib import Path
 from tarfile import TarFile, is_tarfile
 from tempfile import TemporaryDirectory
 from timeit import default_timer
-from types import EllipsisType
-from typing import Any, ClassVar, Iterable, Iterator, Mapping, Protocol, Self, TypeVar, cast, Generator as PyGenerator
-from typing_extensions import TypedDict
+from types import EllipsisType, TracebackType
+from typing import Any, ClassVar, Protocol, Self, TypeVar, cast
 from uuid import uuid4
-import json
-from dataclasses import dataclass, field
 from zipfile import ZipFile, is_zipfile
 
-from docker import DockerClient
-from docker.errors import APIError, BuildError as DockerBuildError, DockerException, ImageNotFound
-from docker.models.images import Image as DockerImage
-from docker.models.containers import Container as DockerContainer
-from docker.types import Mount
-from requests import Timeout, ConnectionError
 from anyio import run as run_async
 from anyio.to_thread import run_sync
+from docker import DockerClient
+from docker.errors import APIError, BuildError as DockerBuildError, DockerException, ImageNotFound
+from docker.models.containers import Container as DockerContainer
+from docker.models.images import Image as DockerImage
+from docker.types import Mount
+from requests import ConnectionError, Timeout
+from typing_extensions import TypedDict
 from urllib3.exceptions import ReadTimeoutError
 
+from algobattle.problem import Instance, Problem, Solution
 from algobattle.util import (
     BuildError,
     DockerError,
@@ -34,12 +37,10 @@ from algobattle.util import (
     ExceptionInfo,
     ExecutionError,
     ExecutionTimeout,
+    Role,
     TempDir,
     ValidationError,
-    Role,
 )
-from algobattle.problem import Problem, Instance, Solution
-
 
 _client_var: DockerClient | None = None
 
@@ -55,8 +56,8 @@ def client() -> DockerClient:
             _client_var = DockerClient.from_env()
         else:
             _client_var.ping()
-    except (DockerException, APIError):
-        raise DockerNotRunning
+    except (DockerException, APIError) as e:
+        raise DockerNotRunning from e
     return _client_var
 
 
@@ -156,7 +157,7 @@ class ProgramIO:
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, exc: Any, val: Any, tb: Any):
+    def __exit__(self, exc: type[BaseException] | None, val: BaseException | None, tb: TracebackType | None):
         self._input.__exit__(exc, val, tb)
         self._output.__exit__(exc, val, tb)
 
@@ -256,7 +257,7 @@ class Program(ABC):
             normalized = team_name.lower().replace(" ", "_")
             name = f"algobattle_{normalized}_{cls.role.name}"
             try:
-                old_image = cast(DockerImage, client().images.get(name))
+                old_image = client().images.get(name)
             except ImageNotFound:
                 old_image = None
         else:
@@ -292,7 +293,7 @@ class Program(ABC):
             problem=problem,
             config=config,
         )
-        used_size = cast(dict[str, Any], image.attrs).get("Size", 0)
+        used_size = image.attrs.get("Size", 0)
         if config.max_program_size is not None and used_size > config.max_program_size:
             try:
                 self.remove()
@@ -357,36 +358,33 @@ class Program(ABC):
         ui: ProgramUi | None,
     ) -> tuple[float, Encodable | None]:
         """Encodes the metadata, runs the docker container, and decodes battle metadata."""
-        with open(io.input / "info.json", "w+") as f:
-            json.dump(
+        io.input.joinpath("info.json").write_text(
+            json.dumps(
                 {
                     "max_size": max_size,
                     "timeout": specs.timeout,
                     "space": specs.space,
                     "cpus": specs.cpus,
                 },
-                f,
             )
+        )
         if battle_input is not None:
             try:
                 battle_input.encode(io.input / "battle_data", self.role)
             except Exception as e:
-                raise EncodingError("Battle data couldn't be encoded.", detail=str(e))
+                raise EncodingError("Battle data couldn't be encoded.", detail=str(e)) from e
 
         runtime = 0
         try:
-            container = cast(
-                DockerContainer,
-                client().containers.create(
-                    image=self.id,
-                    name=f"algobattle_{uuid4().hex[:8]}",
-                    mem_limit=specs.space,
-                    nano_cpus=specs.cpus * 1_000_000_000,
-                    detach=True,
-                    mounts=io.mounts if io else None,
-                    cpuset_cpus=set_cpus,
-                    **self.config.run_kwargs,
-                ),
+            container = client().containers.create(
+                image=self.id,
+                name=f"algobattle_{uuid4().hex[:8]}",
+                mem_limit=specs.space,
+                nano_cpus=specs.cpus * 1_000_000_000,
+                detach=True,
+                mounts=io.mounts if io else None,
+                cpuset_cpus=set_cpus,
+                **self.config.run_kwargs,
             )
 
             if ui is not None:
@@ -394,7 +392,7 @@ class Program(ABC):
             try:
                 runtime = await run_sync(self._run_daemon_call, container, specs.timeout, cancellable=True)
             except ExecutionError as e:
-                raise _WrappedException(e, e.runtime)
+                raise _WrappedException(e, e.runtime) from e
             finally:
                 container.remove(force=True)
                 if ui is not None:
@@ -402,13 +400,13 @@ class Program(ABC):
         except APIError as e:
             raise _WrappedException(
                 DockerError("Docker APIError thrown while running container.", detail=str(e)), runtime
-            )
+            ) from e
 
         if battle_output:
             try:
                 decoded_battle_output = battle_output.decode(io.output / "battle_data", max_size, self.role)
             except Exception as e:
-                raise _WrappedException(e, runtime)
+                raise _WrappedException(e, runtime) from e
         else:
             decoded_battle_output = None
         return runtime, decoded_battle_output
@@ -445,7 +443,7 @@ class Program(ABC):
             if len(e.args) != 1 or not isinstance(e.args[0], ReadTimeoutError):
                 raise
             if self.config.strict_timeouts:
-                raise ExecutionTimeout("The docker container exceeded the time limit.", runtime=elapsed_time)
+                raise ExecutionTimeout("The docker container exceeded the time limit.", runtime=elapsed_time) from e
             return elapsed_time
 
     def remove(self) -> None:
@@ -468,7 +466,7 @@ class Program(ABC):
     def __enter__(self):
         return self
 
-    def __exit__(self, _type: Any, _value: Any, _traceback: Any):
+    def __exit__(self, *args: object):
         if self.config.cleanup_images:
             self.remove()
 
@@ -513,9 +511,7 @@ class Generator(Program):
         exception_info = None
         with ProgramIO() as io:
             try:
-                with open(io.input / "max_size.txt", "w+") as f:
-                    f.write(str(max_size))
-
+                io.input.joinpath("max_size.txt").write_text(str(max_size))
                 runtime, battle_data = await self._run_inner(
                     io=io,
                     max_size=max_size,
@@ -531,15 +527,17 @@ class Generator(Program):
                 except EncodingError:
                     raise
                 except Exception as e:
-                    raise EncodingError("Unknown error thrown while decoding the problem instance.", detail=str(e))
+                    raise EncodingError(
+                        "Unknown error thrown while decoding the problem instance.", detail=str(e)
+                    ) from e
                 try:
                     instance.validate_instance()
                 except ValidationError:
                     raise
                 except Exception as e:
-                    raise ValidationError("Unknown error thrown during instance validation.", detail=str(e))
+                    raise ValidationError("Unknown error thrown during instance validation.", detail=str(e)) from e
                 if instance.size > max_size:
-                    raise ValidationError(
+                    raise ValidationError(  # noqa: TRY301
                         "Instance is too large.", detail=f"Generated: {instance.size}, maximum: {max_size}"
                     )
                 if self.problem.with_solution:
@@ -550,13 +548,13 @@ class Generator(Program):
                     except EncodingError:
                         raise
                     except Exception as e:
-                        raise EncodingError("Unknown error thrown while decoding the solution.", detail=str(e))
+                        raise EncodingError("Unknown error thrown while decoding the solution.", detail=str(e)) from e
                     try:
                         solution.validate_solution(instance, Role.generator)
                     except ValidationError:
                         raise
                     except Exception as e:
-                        raise ValidationError("Unknown error thrown during solution validation.", detail=str(e))
+                        raise ValidationError("Unknown error thrown during solution validation.", detail=str(e)) from e
 
             except _WrappedException as e:
                 runtime = e.runtime
@@ -637,13 +635,13 @@ class Solver(Program):
                 except EncodingError:
                     raise
                 except Exception as e:
-                    raise EncodingError("Unexpected error thrown while decoding the solution.", detail=str(e))
+                    raise EncodingError("Unexpected error thrown while decoding the solution.", detail=str(e)) from e
                 try:
                     solution.validate_solution(instance, Role.solver)
                 except ValidationError:
                     raise
                 except Exception as e:
-                    raise ValidationError("Unexpected error during solution validation.", detail=str(e))
+                    raise ValidationError("Unexpected error during solution validation.", detail=str(e)) from e
 
             except _WrappedException as e:
                 runtime = e.runtime
@@ -758,7 +756,7 @@ class Team:
         self.solver.__enter__()
         return self
 
-    def __exit__(self, *args: Any):
+    def __exit__(self, *args: object):
         self.generator.__exit__(*args)
         self.solver.__exit__(*args)
 
@@ -832,7 +830,7 @@ class TeamHandler:
             team.__enter__()
         return self
 
-    def __exit__(self, *args: Any):
+    def __exit__(self, *args: object):
         for team in self.active:
             team.__exit__(*args)
 

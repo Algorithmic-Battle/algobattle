@@ -2,68 +2,69 @@
 
 Provides a command line interface to start matches and observe them. See `battle --help` for further options.
 """
+
+import operator
+import shutil
+import sys
+from collections.abc import Iterable
 from enum import StrEnum
 from functools import cached_property
-import operator
+from importlib.metadata import version as pkg_version
 from os import environ
 from pathlib import Path
 from random import choice
 from shutil import rmtree
 from subprocess import PIPE, Popen
-import sys
-from typing import Annotated, Any, ClassVar, Iterable, Literal, Optional, Self, cast
-from typing_extensions import override
-from importlib.metadata import version as pkg_version
+from typing import Annotated, Any, ClassVar, Literal, Self, cast
 from zipfile import ZipFile
-import shutil
 
 from anyio import run as run_async_fn
 from click import Choice
 from click.core import Parameter
 from pydantic import Field, TypeAdapter, ValidationError
-from typer import Typer, Argument, Option, Abort, get_app_dir, launch
-from rich.console import Group, RenderableType, Console
+from rich.columns import Columns
+from rich.console import Console, Group, RenderableType
 from rich.live import Live
-from rich.table import Table, Column
+from rich.padding import Padding
+from rich.panel import Panel
 from rich.progress import (
-    Progress,
-    TextColumn,
-    SpinnerColumn,
     BarColumn,
     MofNCompleteColumn,
-    TimeElapsedColumn,
+    Progress,
     ProgressColumn,
+    SpinnerColumn,
     Task,
+    TextColumn,
+    TimeElapsedColumn,
 )
-from rich.panel import Panel
-from rich.text import Text
-from rich.columns import Columns
-from rich.prompt import Prompt, Confirm
-from rich.theme import Theme
+from rich.prompt import Confirm, Prompt
 from rich.rule import Rule
-from rich.padding import Padding
+from rich.table import Column, Table
+from rich.text import Text
+from rich.theme import Theme
 from rich.traceback import Traceback
-from tomlkit import TOMLDocument, comment, parse as parse_toml, dumps as dumps_toml, table, nl as toml_newline
+from tomlkit import TOMLDocument, comment, dumps as dumps_toml, nl as toml_newline, parse as parse_toml, table
 from tomlkit.exceptions import ParseError
 from tomlkit.items import Table as TomlTable
+from typer import Abort, Argument, Option, Typer, get_app_dir, launch
+from typing_extensions import override
 
 from algobattle.battle import Battle
-from algobattle.match import AlgobattleConfig, EmptyUi, Match, MatchConfig, MatchupStr, TeamInfo, Ui, ProjectConfig
+from algobattle.match import AlgobattleConfig, EmptyUi, Match, MatchConfig, MatchupStr, ProjectConfig, TeamInfo, Ui
 from algobattle.problem import Instance, Problem, Solution
 from algobattle.program import Generator, Matchup, Solver
+from algobattle.templates import Language, PartialTemplateArgs, TemplateArgs, write_problem_template, write_templates
 from algobattle.util import (
+    BaseModel,
     BuildError,
     DockerNotRunning,
     EncodableModel,
     ExceptionInfo,
     Role,
     RunningTimer,
-    BaseModel,
     TempDir,
     timestamp,
 )
-from algobattle.templates import Language, PartialTemplateArgs, TemplateArgs, write_problem_template, write_templates
-
 
 __all__ = ("app",)
 
@@ -75,16 +76,14 @@ For more detailed documentation, visit our website at http://algobattle.org/docs
 app = Typer(pretty_exceptions_show_locals=True, help=help_message)
 packager = Typer(help="Subcommands to package problems and programs into `.algo` files.")
 app.add_typer(packager, name="package")
-theme = Theme(
-    {
-        "success": "green",
-        "warning": "orange3",
-        "error": "red",
-        "attention": "magenta2",
-        "heading": "blue",
-        "info": "dim cyan",
-    }
-)
+theme = Theme({
+    "success": "green",
+    "warning": "orange3",
+    "error": "red",
+    "attention": "magenta2",
+    "heading": "blue",
+    "info": "dim cyan",
+})
 console = Console(theme=theme)
 
 
@@ -101,7 +100,7 @@ class _General(BaseModel):
 
 
 class CliConfig(BaseModel):
-    general: _General = Field(default_factory=dict, validate_default=True)
+    general: _General = Field(default_factory=_General)
     default_project_table: ProjectConfig | None = Field(default=None)
 
     _doc: TOMLDocument
@@ -138,8 +137,7 @@ class CliConfig(BaseModel):
     @property
     def default_project_doc(self) -> TomlTable | None:
         """The default exec config for each problem."""
-        exec: Any = self._doc.get("default_project_table", None)
-        return exec
+        return self._doc.get("default_project_table", None)
 
     @cached_property
     def install_cmd(self) -> list[str]:
@@ -167,6 +165,7 @@ class CliConfig(BaseModel):
 
 @app.command("run")
 def run_match(
+    *,
     path: Annotated[
         Path, Argument(exists=True, help="Path to either a config file or a directory containing one.")
     ] = Path(),
@@ -184,27 +183,25 @@ def run_match(
         save = False
     except KeyboardInterrupt:
         console.print("[error]Stopping match execution")
-    finally:
-        try:
-            if config.project.points > 0 and result.active_teams:
-                points = result.calculate_points()
-                leaderboard = Table(
-                    Column("Team", justify="center"),
-                    Column("Points", justify="right"),
-                    title="[heading]Leaderboard",
-                )
-                for team, pts in sorted(points.items(), key=operator.itemgetter(1)):
-                    leaderboard.add_row(team, f"{pts:.1f}")
-                console.print(Padding(leaderboard, (1, 0, 0, 0)))
-
-            if save:
-                out_path = config.project.results.joinpath(f"match-{timestamp()}.json")
-                config.project.results.mkdir(parents=True, exist_ok=True)
-                out_path.write_text(result.format(error_detail=config.project.error_detail))
-                console.print("Saved match result to ", out_path)
-            return result
-        except KeyboardInterrupt:
-            raise Abort
+    try:
+        if config.project.points > 0 and result.active_teams:
+            points = result.calculate_points()
+            leaderboard = Table(
+                Column("Team", justify="center"),
+                Column("Points", justify="right"),
+                title="[heading]Leaderboard",
+            )
+            for team, pts in sorted(points.items(), key=operator.itemgetter(1)):
+                leaderboard.add_row(team, f"{pts:.1f}")
+            console.print(Padding(leaderboard, (1, 0, 0, 0)))
+        if save:
+            out_path = config.project.results.joinpath(f"match-{timestamp()}.json")
+            config.project.results.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(result.format(error_detail=config.project.error_detail))
+            console.print("Saved match result to ", out_path)
+    except KeyboardInterrupt as e:
+        raise Abort from e
+    return result
 
 
 def _init_program(target: Path, lang: Language, args: PartialTemplateArgs, role: Role) -> None:
@@ -239,11 +236,9 @@ class ClickLanguage(Choice):
 
 @app.command(epilog=f"Supported languages are: {', '.join(Language)}.")
 def init(
-    target: Annotated[
-        Optional[Path], Argument(file_okay=False, writable=True, help="The folder to initialize.")
-    ] = None,
+    target: Annotated[Path | None, Argument(file_okay=False, writable=True, help="The folder to initialize.")] = None,
     problem_: Annotated[
-        Optional[str],
+        str | None,
         Option(
             "--problem",
             "-p",
@@ -251,15 +246,15 @@ def init(
         ),
     ] = None,
     language: Annotated[
-        Optional[Language],
+        Language | None,
         Option("--language", "-l", help="The language to use for the programs.", click_type=ClickLanguage()),
     ] = None,
     generator: Annotated[
-        Optional[Language],
+        Language | None,
         Option("--generator", "-g", help="The language to use for the generator.", click_type=ClickLanguage()),
     ] = None,
     solver: Annotated[
-        Optional[Language],
+        Language | None,
         Option("--solver", "-s", help="The language to use for the solver.", click_type=ClickLanguage()),
     ] = None,
     schemas: Annotated[bool, Option(help="Whether to also save the problem's IO schemas.")] = False,
@@ -282,10 +277,28 @@ def init(
     if language:
         generator = solver = language
     config = CliConfig.load()
-    team_name = config.general.team_name or choice(
-        ("Dogs", "Cats", "Otters", "Red Pandas", "Crows", "Rats", "Cockatoos", "Dingos", "Penguins", "Kiwis", "Orcas")
-        + ("Bearded Dragons", "Macaws", "Wombats", "Wallabies", "Owls", "Seals", "Octopuses", "Frogs", "Jellyfish")
-    )
+    team_name = config.general.team_name or choice((
+        "Dogs",
+        "Cats",
+        "Otters",
+        "Red Pandas",
+        "Crows",
+        "Rats",
+        "Cockatoos",
+        "Dingos",
+        "Penguins",
+        "Kiwis",
+        "Orcas",
+        "Bearded Dragons",
+        "Macaws",
+        "Wombats",
+        "Wallabies",
+        "Owls",
+        "Seals",
+        "Octopuses",
+        "Frogs",
+        "Jellyfish",
+    ))
 
     if new:  # create a new problem
         if problem_ is None:
@@ -304,12 +317,12 @@ def init(
             target = Path()
         try:
             parsed_config = AlgobattleConfig.from_file(target, relativize_paths=False)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
             console.print("[error]You must use a problem spec file or target a directory with an existing config.")
-            raise Abort
+            raise Abort from e
         except ValueError as e:
             console.print("[error]The Algobattle config file is not formatted properly\n", e)
-            raise Abort
+            raise Abort from e
         console.print("Using existing project data")
         if len(parsed_config.teams) == 1:
             team_name = next(iter(parsed_config.teams.keys()))
@@ -323,9 +336,8 @@ def init(
 
     elif (problem := Path(problem_)).is_file():  # use a problem spec file
         with TempDir() as unpack_dir:
-            with console.status("Extracting problem data"):
-                with ZipFile(problem) as problem_zip:
-                    problem_zip.extractall(unpack_dir)
+            with console.status("Extracting problem data"), ZipFile(problem) as problem_zip:
+                problem_zip.extractall(unpack_dir)
 
             parsed_config = AlgobattleConfig.from_file(unpack_dir, relativize_paths=False)
             if target is None:
@@ -333,7 +345,7 @@ def init(
 
             target.mkdir(parents=True, exist_ok=True)
             problem_data = list(unpack_dir.iterdir())
-            if any(((target / path.name).exists() for path in problem_data)):
+            if any(target.joinpath(path.name).exists() for path in problem_data):
                 copy_problem_data = Confirm.ask(
                     "[attention]The target directory already contains an algobattle project, "
                     "do you want to replace it?",
@@ -363,9 +375,10 @@ def init(
     problem_name = parsed_config.match.problem
     if deps := parsed_config.problem.dependencies:
         cmd = config.install_cmd
-        with console.status(f"Installing {problem_name}'s dependencies"), Popen(
-            cmd + deps, env=environ.copy(), stdout=PIPE, stderr=PIPE, text=True
-        ) as installer:
+        with (
+            console.status(f"Installing {problem_name}'s dependencies"),
+            Popen(cmd + deps, env=environ.copy(), stdout=PIPE, stderr=PIPE, text=True) as installer,
+        ):
             assert installer.stdout is not None
             assert installer.stderr is not None
             for line in installer.stdout:
@@ -506,7 +519,7 @@ def test_team(config: AlgobattleConfig, team: str, size: int | None = None) -> T
 @app.command()
 def test(
     project: Annotated[Path, Argument(help="The project folder to use.")] = Path(),
-    size: Annotated[Optional[int], Option(help="The size of instance the generator will be asked to create.")] = None,
+    size: Annotated[int | None, Option(help="The size of instance the generator will be asked to create.")] = None,
 ) -> Literal["success", "error"]:
     """Tests whether the programs install successfully and run on dummy instances without crashing."""
     if not (project.is_file() or project.joinpath("algobattle.toml").is_file()):
@@ -542,10 +555,10 @@ def config() -> None:
 def package_problem(
     project: Annotated[Path, Argument(exists=True, resolve_path=True, help="Path to the project directory.")] = Path(),
     description: Annotated[
-        Optional[Path], Option(exists=True, dir_okay=False, help="Path to a problem description file.")
+        Path | None, Option(exists=True, dir_okay=False, help="Path to a problem description file.")
     ] = None,
     out: Annotated[
-        Optional[Path], Option("--out", "-o", dir_okay=False, file_okay=False, help="Location of the output.")
+        Path | None, Option("--out", "-o", dir_okay=False, file_okay=False, help="Location of the output.")
     ] = None,
 ) -> None:
     """Packages problem data into an `.algo` file."""
@@ -571,22 +584,23 @@ def package_problem(
         parsed_config = AlgobattleConfig.from_file(config)
     except (ValidationError, ParseError) as e:
         console.print(f"[error]Improperly formatted config file[/]\nError: {e}")
-        raise Abort
+        raise Abort from e
     problem_name = parsed_config.match.problem
     try:
         with console.status("Loading problem"):
-            parsed_config.loaded_problem
+            # we need to access the property so that it gets loaded
+            parsed_config.loaded_problem # noqa: B018
     except ValueError as e:
         console.print(f"[error]Couldn't load the problem file[/]\nError: {e}")
-        raise Abort
+        raise Abort from e
     except RuntimeError as e:
         error = e.__cause__
         if error is None:
             console.print(f"[error]Couldn't load the problem file[/]\nError: {e}")
-            raise Abort
+            raise Abort from e
         trace = Traceback.from_exception(error.__class__, error, error.__traceback__)
         console.print("[error]Couldn't execute the problem file[/]\nError:", trace)
-        raise Abort
+        raise Abort from e
 
     if "project" in config_doc:
         config_doc.remove("project")
@@ -613,7 +627,7 @@ def package_problem(
 def package_programs(
     project: Annotated[Path, Argument(help="The project folder to use.")] = Path(),
     team: Annotated[
-        Optional[str],
+        str | None,
         Option(
             help="Name of team whose programs should be packaged. If None are specified, every team's are packaged."
         ),
@@ -789,9 +803,6 @@ class CliUi(Live, Ui):
         self.config = config
         super().__init__(None, refresh_per_second=10, transient=True, console=console)
 
-    def __enter__(self) -> Self:
-        return cast(Self, super().__enter__())
-
     def _update_renderable(self) -> None:
         if self.build is None:
             renderable = Group(self.display_match(self.match, self.config.match), *self.battle_panels.values())
@@ -809,10 +820,7 @@ class CliUi(Live, Ui):
             title="[heading]Match overview",
         )
         for matchup, battle in match.battles.items():
-            if battle.runtime_error is None:
-                res = battle.format_score(battle.score(config.battle))
-            else:
-                res = ":warning:"
+            res = battle.format_score(battle.score(config.battle)) if battle.runtime_error is None else ":warning:"
             table.add_row(matchup.generator, matchup.solver, res)
         return Padding(table, pad=(1, 0, 0, 0))
 
@@ -868,7 +876,7 @@ class CliUi(Live, Ui):
         fights = battle.fights[-1:-6:-1]
         panel = self.battle_panels[matchup]
         table = panel._fights_table()
-        for i, fight in zip(range(len(battle.fights), len(battle.fights) - len(fights), -1), fights):
+        for i, fight in zip(range(len(battle.fights), len(battle.fights) - len(fights), -1), fights, strict=True):
             if fight.generator.error:
                 info = f"[error]Generator failed[/]: {fight.generator.error.message}"
             elif fight.solver and fight.solver.error:

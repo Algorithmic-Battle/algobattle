@@ -8,8 +8,12 @@ version = "4.3.2"
 description = "The Algobattle lab course package."
 readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "MIT"}
-authors = [{name = "Imogen Hergeth"}, {name = "Jan Dreier"}, {name = "Henri Lotze"}]
+license = { text = "MIT" }
+authors = [
+    { name = "Imogen Hergeth" },
+    { name = "Jan Dreier" },
+    { name = "Henri Lotze" },
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -48,8 +52,98 @@ dev = [
 [project.scripts]
 algobattle = "algobattle.cli:app"
 
-[tool.pyright]
-diagnosticMode = "workspace"
-
-[tool.black]
+[tool.ruff]
+preview = true
 line-length = 120
+exclude = ["docs"]
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E4",
+    "E7",
+    "E9",
+    "I",
+    "UP",
+    "YTT",
+    "ASYNC",
+    "BLE",
+    "FBT",
+    "B",
+    "C4",
+    "DTZ",
+    "ISC",
+    "G",
+    "PIE",
+    "PYI",
+    "SLOT",
+    "SIM",
+    "PTH",
+    "TRY",
+    "FLY",
+    "PERF",
+    "FURB",
+    "RUF",
+]
+ignore = [
+    "TRY003",
+    "PIE790",
+    "FBT001",
+    "FBT002",
+    "B027",
+    "FBT003",
+    "RUF001",
+    "RUF036",
+    "BLE001",
+    "DTZ005",
+    "ASYNC109",
+]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+combine-as-imports = true
+
+[tool.pyright]
+exclude = ["docs"]
+typeCheckingMode = "standard"
+disableBytesTypePromotions = true
+strictDictionaryInference = true
+strictListInference = true
+strictSetInference = true
+deprecateTypingAliases = true
+enableExperimentalFeatures = true
+reportAssertAlwaysTrue = "information"
+reportUnusedExpression = "information"
+reportConstantRedefinition = "warning"
+reportDeprecated = "information"
+reportDuplicateImport = "information"
+reportIncompleteStub = "warning"
+reportInconsistentConstructor = "error"
+reportInvalidStubStatement = "warning"
+reportMatchNotExhaustive = "warning"
+reportMissingParameterType = "warning"
+reportMissingTypeArgument = "none"
+reportPrivateUsage = "none"
+reportTypeCommentUsage = "information"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "warning"
+reportUnknownVariableType = "none"
+reportUnnecessaryCast = "information"
+reportUnnecessaryIsInstance = "information"
+reportUnnecessaryComparison = "information"
+reportUnnecessaryContains = "information"
+reportUnusedCoroutine = "warning"
+reportUntypedFunctionDecorator = "warning"
+reportUntypedClassDecorator = "warning"
+reportUntypedBaseClass = "warning"
+reportUntypedNamedTuple = "warning"
+reportCallInDefaultInitializer = "none"
+reportImportCycles = "warning"
+reportPropertyTypeMismatch = "error"
+reportShadowedImports = "warning"
+reportUnnecessaryTypeIgnoreComment = "information"
+reportUninitializedInstanceVariable = "warning"
+reportFunctionMemberAccess = "warning"
+reportOverlappingOverload = "warning"

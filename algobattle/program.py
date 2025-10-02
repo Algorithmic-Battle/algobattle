@@ -312,7 +312,7 @@ class Program(ABC):
             client().images.build(
                 path=str(path),
                 tag=tag,
-                timeout=timeout,
+                timeout=timeout, # type: ignore
                 dockerfile=dockerfile,
                 **build_kwargs,
             ),

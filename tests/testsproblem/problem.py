@@ -1,7 +1,8 @@
 """Problem class built for tests."""
 
 from typing import Any
-from algobattle.problem import Problem, InstanceModel, SolutionModel
+
+from algobattle.problem import InstanceModel, Problem, SolutionModel
 from algobattle.util import Role, ValidationError
 
 

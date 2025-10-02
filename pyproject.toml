@@ -39,9 +39,7 @@ Repository = "https://github.com/Benezivas/algobattle"
 
 [project.optional-dependencies]
 dev = [
-    "black>=23.12.1",
-    "flake8>=6.1.0",
-    "flake8-docstrings>=1.7.0",
+    "ruff>=0.13.2",
     "mkdocs>=1.5.3",
     "mkdocs-material>=9.5.3",
     "pymdown-extensions>=10.7",
@@ -55,7 +53,7 @@ algobattle = "algobattle.cli:app"
 [tool.ruff]
 preview = true
 line-length = 120
-exclude = ["docs"]
+exclude = ["docs/src"]
 
 [tool.ruff.lint]
 select = [
@@ -104,7 +102,7 @@ split-on-trailing-comma = false
 combine-as-imports = true
 
 [tool.pyright]
-exclude = ["docs"]
+exclude = [".venv", "docs"]
 typeCheckingMode = "standard"
 disableBytesTypePromotions = true
 strictDictionaryInference = true

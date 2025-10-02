@@ -438,7 +438,7 @@ class DirectedGraph(InstanceModel):
         """The set of edges in this graph."""
         return set(self.edges)
 
-    @cache
+    @cache # noqa: B019
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         res = set[Vertex]()
@@ -474,7 +474,7 @@ class UndirectedGraph(DirectedGraph):
         """
         return set(self.edges) | {(v, u) for (u, v) in self.edges}
 
-    @cache
+    @cache # noqa: B019
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         # more efficient specialization
@@ -515,7 +515,7 @@ class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
         """Iterate over all edges and their weights."""
         return zip(self.edges, self.edge_weights, strict=True)
 
-    @cache
+    @cache # noqa: B019
     def weight(self, edge: Edge | tuple[Vertex, Vertex]) -> Weight:
         """Returns the weight of an edge.
 

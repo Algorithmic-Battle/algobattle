@@ -1,50 +1,40 @@
 """Module defining the Problem and Solution base classes and related objects."""
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import wraps
 from importlib.metadata import entry_points
 from inspect import Parameter, Signature, signature
 from itertools import chain
+from math import inf, isnan
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
+    Generic,
     Literal,
     ParamSpec,
     Protocol,
     Self,
-    Generic,
     TypeVar,
-    overload,
     cast,
     get_args,
+    overload,
     runtime_checkable,
 )
-from math import inf, isnan
-from annotated_types import GroupedMetadata
 
-from pydantic import (
-    GetCoreSchemaHandler,
-    ValidationInfo,
-)
+from annotated_types import GroupedMetadata
+from pydantic import GetCoreSchemaHandler, ValidationInfo
 from pydantic.main import BaseModel
 from pydantic_core import CoreSchema
 from pydantic_core.core_schema import (
+    ValidatorFunctionWrapHandler,
     with_info_after_validator_function,
     with_info_wrap_validator_function,
-    ValidatorFunctionWrapHandler,
 )
 
-from algobattle.util import (
-    EncodableBase,
-    EncodableModel,
-    EncodableModelBase,
-    Role,
-    Encodable,
-    import_file_as_module,
-)
+from algobattle.util import Encodable, EncodableBase, EncodableModel, EncodableModelBase, Role, import_file_as_module
 
 
 class Instance(Encodable, ABC):
@@ -72,12 +62,12 @@ InstanceT = TypeVar("InstanceT", bound=Instance, contravariant=True)
 P = ParamSpec("P")
 
 
-class Solution(EncodableBase, Generic[InstanceT], ABC):
+class Solution(EncodableBase, ABC, Generic[InstanceT]):
     """A proposed solution for an instance of this problem."""
 
     @classmethod
     @abstractmethod
-    def decode(cls, source: Path, max_size: int, role: Role, instance: InstanceT) -> Self:  # noqa: D102
+    def decode(cls, source: Path, max_size: int, role: Role, instance: InstanceT) -> Self:
         raise NotImplementedError
 
     def validate_solution(self, instance: InstanceT, role: Role) -> None:
@@ -230,7 +220,7 @@ class Problem:
     """The definition of a problem."""
 
     @overload
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         *,
         name: str,
@@ -244,7 +234,7 @@ class Problem:
         ...
 
     @overload
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         *,
         name: str,
@@ -295,7 +285,7 @@ class Problem:
         self.test_instance = test_instance
         self._problems[name] = self
 
-    __slots__ = ("name", "instance_cls", "solution_cls", "min_size", "with_solution", "score_function", "test_instance")
+    __slots__ = ("instance_cls", "min_size", "name", "score_function", "solution_cls", "test_instance", "with_solution")
     _problems: ClassVar[dict[str, Self]] = {}
 
     @overload
@@ -376,7 +366,7 @@ class Problem:
             case [e]:
                 loaded: object = e.load()
                 if not isinstance(loaded, cls):
-                    raise ValueError(
+                    raise ValueError( # noqa: TRY004
                         f"The entrypoint '{name}' doesn't point to a problem but a {loaded.__class__.__qualname__}."
                     )
                 return loaded
@@ -500,8 +490,8 @@ class AttributeReferenceMaker:
 
     _attr_ref_maker_model: ModelReference
 
-    def __getattr__(self, __name: str) -> AttributeReference:
-        return AttributeReference(self._attr_ref_maker_model, __name)
+    def __getattr__(self, name: str, /) -> AttributeReference:
+        return AttributeReference(self._attr_ref_maker_model, name)
 
 
 SelfRef = AttributeReferenceMaker("self")

@@ -705,13 +705,13 @@ class Improving(Battle):
         """Number of fights that will be fought."""
         weighting: Annotated[float, Ge(0)] = 1.1
         """How much each successive fight should be weighted more than the previous."""
-        scores: set[Role] = {Role.generator, Role.solver}
+        scores: set[Role] = {Role.generator, Role.solver} # noqa: RUF012
         """Who to show each fight's scores to."""
-        instances: set[Role] = {Role.generator, Role.solver}
+        instances: set[Role] = {Role.generator, Role.solver} # noqa: RUF012
         """Who to show the instances to."""
-        generator_solutions: set[Role] = {Role.generator}
+        generator_solutions: set[Role] = {Role.generator} # noqa: RUF012
         """Who to show the generator's solutions to, if the problem requires them."""
-        solver_solutions: set[Role] = {Role.solver}
+        solver_solutions: set[Role] = {Role.solver} # noqa: RUF012
         """Who to show the solver's solutions to."""
 
     class UiData(Battle.UiData):

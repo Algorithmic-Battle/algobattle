@@ -20,7 +20,7 @@ from zipfile import ZipFile
 
 from anyio import run as run_async_fn
 from click import Choice
-from click.core import Parameter
+from click.core import Context, Parameter
 from pydantic import Field, TypeAdapter, ValidationError
 from rich.columns import Columns
 from rich.console import Console, Group, RenderableType
@@ -230,7 +230,7 @@ class ClickLanguage(Choice):
     def __init__(self, case_sensitive: bool = True) -> None:
         super().__init__([lang.value for lang in Language], case_sensitive)
 
-    def get_metavar(self, param: Parameter) -> str:
+    def get_metavar(self, param: Parameter, ctx: Context) -> str:
         return "LANGUAGE"
 
 

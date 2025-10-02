@@ -1,19 +1,19 @@
 """Tests for all util functions."""
-from math import inf
 import unittest
+from math import inf
 
-from algobattle.battle import Battle, Iterated, Averaged
+from algobattle.battle import Averaged, Battle, Iterated
 from algobattle.problem import InstanceModel, SolutionModel, default_score
 from algobattle.util import Role
 
 
-class DummyInstance(InstanceModel):  # noqa: D101
+class DummyInstance(InstanceModel):
     @property
     def size(self) -> int:
         return 1
 
 
-class DummySolution(SolutionModel[DummyInstance]):  # noqa: D101
+class DummySolution(SolutionModel[DummyInstance]):
     val: float
 
     def score(self, instance: DummyInstance, role: Role) -> float:

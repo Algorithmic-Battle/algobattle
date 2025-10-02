@@ -1,20 +1,13 @@
 """Utility types used to easily define Problems."""
+from collections.abc import Collection, Iterator
 from dataclasses import dataclass
 from functools import cache, cached_property
+from itertools import pairwise
 from sys import float_info
-from typing import (
-    Annotated,
-    Any,
-    ClassVar,
-    Collection,
-    Iterator,
-    Literal,
-    TypeVar,
-    Generic,
-    TypedDict,
-    overload,
-)
+from typing import Annotated, Any, ClassVar, Generic, Literal, TypedDict, TypeVar, overload
+
 import annotated_types as at
+import pydantic._internal._validators as validators
 from annotated_types import (
     BaseMetadata,
     GroupedMetadata,
@@ -25,52 +18,49 @@ from annotated_types import (
     SupportsLt,
     SupportsMod,
 )
-from itertools import pairwise
-
 from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
-import pydantic._internal._validators as validators
 from pydantic_core import CoreSchema, PydanticKnownError
 from pydantic_core.core_schema import no_info_after_validator_function
 
 from algobattle.problem import (
-    InstanceModel,
-    SolutionModel,
     AttributeReference,
     AttributeReferenceValidator,
+    InstanceModel,
     InstanceRef,
+    SolutionModel,
 )
 from algobattle.util import BaseModel, Role, ValidationError
 
 __all__ = (
-    "u64",
-    "i64",
-    "u32",
-    "i32",
-    "u16",
-    "i16",
-    "Gt",
-    "Ge",
-    "Lt",
-    "Le",
-    "Interval",
-    "MultipleOf",
-    "MinLen",
-    "MaxLen",
-    "Len",
-    "UniqueItems",
-    "SizeIndex",
-    "SizeLen",
+    "AlgobattleContext",
     "DirectedGraph",
-    "UndirectedGraph",
     "Edge",
-    "Path",
     "EdgeLen",
     "EdgeWeights",
-    "VertexWeights",
-    "AlgobattleContext",
+    "Ge",
+    "Gt",
+    "Interval",
     "LaxComp",
+    "Le",
+    "Len",
+    "Lt",
+    "MaxLen",
+    "MinLen",
+    "MultipleOf",
+    "Path",
+    "SizeIndex",
+    "SizeLen",
+    "UndirectedGraph",
+    "UniqueItems",
+    "VertexWeights",
+    "i16",
+    "i32",
+    "i64",
     "lax_comp",
+    "u16",
+    "u32",
+    "u64",
 )
 
 
@@ -228,7 +218,7 @@ class Interval(GroupedMetadata):
     lt: SupportsLt | AttributeReference | None = None
     le: SupportsLe | AttributeReference | None = None
 
-    def __iter__(self) -> Iterator[BaseMetadata | AttributeReferenceValidator]:  # type: ignore
+    def __iter__(self) -> Iterator[BaseMetadata | AttributeReferenceValidator]:
         """Unpack an Interval into zero or more single-bounds."""
         if self.gt is not None:
             yield Gt(self.gt)
@@ -315,7 +305,7 @@ class Len(GroupedMetadata):
     min_length: Annotated[int, Ge(0)] | AttributeReference = 0
     max_length: Annotated[int, Ge(0)] | AttributeReference | None = None
 
-    def __iter__(self) -> Iterator[BaseMetadata | AttributeReferenceValidator]:  # type: ignore
+    def __iter__(self) -> Iterator[BaseMetadata | AttributeReferenceValidator]:
         """Unpack a Len into one or more single-bounds."""
         if self.min_length != 0:
             yield MinLen(self.min_length)
@@ -376,12 +366,12 @@ class IndexInto:
         return AttributeReferenceValidator(validator, attribute)
 
     @classmethod
-    def __class_getitem__(cls, __key: AttributeReference) -> type[int]:
+    def __class_getitem__(cls, key: AttributeReference, /) -> Annotated:
         def validator(val: Any, attr: Any) -> Any:
             validators.less_than_validator(val, len(attr))
             return val
 
-        return Annotated[int, at.Ge(0), AttributeReferenceValidator(validator, __key)]
+        return Annotated[int, at.Ge(0), AttributeReferenceValidator(validator, key)]
 
 
 # * Algobattle specific types
@@ -448,14 +438,14 @@ class DirectedGraph(InstanceModel):
         """The set of edges in this graph."""
         return set(self.edges)
 
-    @cache
+    @cache # noqa: B019
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         res = set[Vertex]()
         if direction in {"all", "outgoing"}:
-            res |= set(v for (u, v) in self.edges if u == vertex)
+            res |= {v for (u, v) in self.edges if u == vertex}
         if direction in {"all", "incoming"}:
-            res |= set(v for (v, u) in self.edges if u == vertex)
+            res |= {v for (v, u) in self.edges if u == vertex}
         return res
 
 
@@ -482,14 +472,14 @@ class UndirectedGraph(DirectedGraph):
 
         Normalized to contain every edge in both directions.
         """
-        return set(self.edges) | set((v, u) for (u, v) in self.edges)
+        return set(self.edges) | {(v, u) for (u, v) in self.edges}
 
-    @cache
+    @cache # noqa: B019
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         # more efficient specialization
 
-        return set(v for (u, v) in self.edge_set if u == vertex)
+        return {v for (u, v) in self.edge_set if u == vertex}
 
 
 class EdgeLen:
@@ -523,9 +513,9 @@ class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
     @cached_property
     def edges_with_weights(self) -> Iterator[tuple[tuple[Vertex, Vertex], Weight]]:
         """Iterate over all edges and their weights."""
-        return zip(self.edges, self.edge_weights)
+        return zip(self.edges, self.edge_weights, strict=True)
 
-    @cache
+    @cache # noqa: B019
     def weight(self, edge: Edge | tuple[Vertex, Vertex]) -> Weight:
         """Returns the weight of an edge.
 
@@ -534,14 +524,14 @@ class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
         if isinstance(edge, tuple):
             try:
                 edge = self.edges.index(edge)
-            except ValueError:
+            except ValueError as e:
                 if isinstance(self, UndirectedGraph):
                     try:
                         edge = self.edges.index((edge[1], edge[0]))
-                    except ValueError:
-                        raise KeyError
+                    except ValueError as e:
+                        raise KeyError from e
                 else:
-                    raise KeyError
+                    raise KeyError from e
 
         return self.edge_weights[edge]
 

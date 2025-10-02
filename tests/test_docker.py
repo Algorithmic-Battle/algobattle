@@ -1,11 +1,13 @@
 """Tests for all docker functions."""
-from unittest import IsolatedAsyncioTestCase, main as run_tests
 from pathlib import Path
+from unittest import IsolatedAsyncioTestCase, main as run_tests
 
-from algobattle.program import Generator, Solver
 from algobattle.match import AlgobattleConfig, MatchConfig, RunConfig
+from algobattle.program import Generator, Solver
+from algobattle.util import BuildError
+
 from . import testsproblem
-from .testsproblem.problem import TestProblem, TestInstance, TestSolution
+from .testsproblem.problem import TestInstance, TestProblem, TestSolution
 
 
 class ProgramTests(IsolatedAsyncioTestCase):
@@ -28,6 +30,17 @@ class ProgramTests(IsolatedAsyncioTestCase):
             )
         ).as_prog_config()
         cls.instance = TestInstance(semantics=True)
+
+    async def test_build_error(self):
+        """A container's build step times out."""
+        with self.assertRaises(BuildError, msg="Build did not complete successfully."):
+            await Generator.build(path=self.problem_path / "build_error", problem=TestProblem, config=self.config)
+
+    async def test_build_timeout(self):
+        """A container's build step times out."""
+        config = AlgobattleConfig(match=MatchConfig(problem="Test Problem", build_timeout=1.5)).as_prog_config()
+        with self.assertRaises(BuildError, msg="Build ran into a timeout."):
+            await Generator.build(path=self.problem_path / "build_timeout", problem=TestProblem, config=config)
 
     async def test_gen_lax_timeout(self):
         """The generator times out but still outputs a valid instance."""

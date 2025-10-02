@@ -1,14 +1,17 @@
 """Module defining how a match is run."""
+
+import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import cached_property
 from itertools import combinations
 from pathlib import Path
-import tomllib
-from typing import Annotated, Any, Iterable, Literal, Protocol, ClassVar, Self, TypeAlias, TypeVar, cast
-from typing_extensions import override
-from typing_extensions import TypedDict
+from typing import Annotated, Any, ClassVar, Literal, Protocol, Self, TypeAlias, TypeVar, cast
 
+from anyio import CapacityLimiter, create_task_group
+from anyio.to_thread import current_default_thread_limiter
+from docker.types import LogConfig, Ulimit
 from pydantic import (
     AfterValidator,
     ByteSize,
@@ -24,27 +27,20 @@ from pydantic import (
 from pydantic.types import PathType
 from pydantic_core import CoreSchema
 from pydantic_core.core_schema import no_info_after_validator_function, union_schema
-from anyio import create_task_group, CapacityLimiter
-from anyio.to_thread import current_default_thread_limiter
-from docker.types import LogConfig, Ulimit
+from typing_extensions import TypedDict, override
 
 from algobattle.battle import (
     Battle,
+    BattleUi,
     FightHandler,
     FightUi,
-    BattleUi,
     Iterated,
     ProgramLogConfigLocation,
     ProgramLogConfigTime,
 )
-from algobattle.program import ProgramConfigView, ProgramUi, Matchup, TeamHandler, BuildUi
 from algobattle.problem import Problem
-from algobattle.util import (
-    ExceptionInfo,
-    Role,
-    RunningTimer,
-    BaseModel,
-)
+from algobattle.program import BuildUi, Matchup, ProgramConfigView, ProgramUi, TeamHandler
+from algobattle.util import BaseModel, ExceptionInfo, Role, RunningTimer
 
 
 @dataclass(frozen=True)
@@ -159,7 +155,7 @@ class Match(BaseModel):
         other team did against them.
         """
         total_points_per_team = self.config.project.points
-        points = {team: 0.0 for team in self.active_teams + list(self.excluded_teams)}
+        points = dict.fromkeys(self.active_teams + list(self.excluded_teams), 0.0)
         if len(self.active_teams) == 0:
             return points
         if len(self.active_teams) == 1:
@@ -290,7 +286,7 @@ class EmptyUi(Ui):
         """Starts displaying the Ui."""
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         """Stops the Ui."""
         return
 
@@ -303,23 +299,23 @@ class BattleObserver(BattleUi, FightUi, ProgramUi):
     matchup: Matchup
 
     @override
-    def update_battle_data(self, data: Battle.UiData) -> None:  # noqa: D102
+    def update_battle_data(self, data: Battle.UiData) -> None:
         self.ui.update_battle_data(self.matchup, data)
 
     @override
-    def start_fight(self, max_size: int) -> None:  # noqa: D102
+    def start_fight(self, max_size: int) -> None:
         self.ui.start_fight(self.matchup, max_size)
 
     @override
-    def end_fight(self) -> None:  # noqa: D102
+    def end_fight(self) -> None:
         self.ui.end_fight(self.matchup)
 
     @override
-    def start_program(self, role: Role, timeout: float | None) -> None:  # noqa: D102
+    def start_program(self, role: Role, timeout: float | None) -> None:
         self.ui.start_program(self.matchup, role, RunningTimer(datetime.now(), timeout))
 
     @override
-    def stop_program(self, role: Role, runtime: float) -> None:  # noqa: D102
+    def stop_program(self, role: Role, runtime: float) -> None:
         self.ui.end_program(self.matchup, role, runtime)
 
 
@@ -344,7 +340,7 @@ class TimeFloat:
 
 def parse_none(value: Any) -> Any | None:
     """Used as a validator to parse false-y values into Python None objects."""
-    return None if not value else value
+    return value or None
 
 
 T = TypeVar("T")
@@ -372,7 +368,7 @@ RelativeFilePath = Annotated[Path, AfterValidator(_relativize_file), Field(valid
 class _Adapter:
     """Turns a docker library config class into a pydantic parseable one."""
 
-    _Args: ClassVar[type[TypedDict]]
+    _Args: ClassVar[type]
 
     @classmethod
     def _construct(cls, kwargs: dict[str, Any]) -> Self:
@@ -383,13 +379,13 @@ class _Adapter:
         return no_info_after_validator_function(cls._construct, handler(cls._Args))
 
 
-class PydanticLogConfig(LogConfig, _Adapter):  # noqa: D101
+class PydanticLogConfig(LogConfig, _Adapter):
     class _Args(TypedDict):
         type: str
         conifg: dict[Any, Any]
 
 
-class PydanticUlimit(Ulimit, _Adapter):  # noqa: D101
+class PydanticUlimit(Ulimit, _Adapter):
     class _Args(TypedDict):
         name: str
         soft: int
@@ -588,7 +584,7 @@ class MatchConfig(BaseModel):
 
     problem: str
     """The problem this match is over."""
-    build_timeout: WithNone[TimeDeltaFloat] = 600
+    build_timeout: WithNone[TimeDeltaFloat] = 600.0
     """Timeout for building each docker image."""
     max_program_size: WithNone[ByteSizeInt] = 4_000_000_000
     """Maximum size a built program image is allowed to be."""
@@ -661,15 +657,20 @@ class TeamInfo(BaseModel):
 TeamInfos: TypeAlias = dict[str, TeamInfo]
 
 
+def _empty_default() -> Any:
+    """Helper to make a structure that gets parsed to a default pydantic struct while passing type checking."""
+    return {}
+
+
 class AlgobattleConfig(BaseModel):
     """Base that contains all config options and can be parsed from config files."""
 
     # funky defaults to force their validation with context info present
     teams: TeamInfos = Field(default_factory=dict)
-    project: ProjectConfig = Field(default_factory=dict, validate_default=True)
+    project: ProjectConfig = Field(default_factory=_empty_default, validate_default=True)
     match: MatchConfig
     docker: DockerConfig = DockerConfig()
-    problem: DynamicProblemConfig = Field(default_factory=dict, validate_default=True)
+    problem: DynamicProblemConfig = Field(default_factory=_empty_default, validate_default=True)
 
     model_config = ConfigDict(revalidate_instances="always")
 
@@ -696,7 +697,7 @@ class AlgobattleConfig(BaseModel):
         try:
             config_dict = tomllib.loads(file.read_text())
         except tomllib.TOMLDecodeError as e:
-            raise ValueError(f"The config file at {file} is not a properly formatted TOML file!\n{e}")
+            raise ValueError(f"The config file at {file} is not a properly formatted TOML file!\n{e}") from e
         context: dict[str, Any] = {"ignore_uninstalled": ignore_uninstalled}
         if relativize_paths:
             context["base_path"] = file.parent

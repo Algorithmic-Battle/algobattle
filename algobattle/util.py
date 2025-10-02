@@ -2,24 +2,20 @@
 
 In particular, the base classes :class:`BaseModel`, :class:`Encodable`, :class:`EncodableModel`, and exception classes.
 """
+import json
+import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 from importlib.util import module_from_spec, spec_from_file_location
-import json
 from pathlib import Path
-import sys
 from tempfile import TemporaryDirectory
 from traceback import format_exception
 from types import ModuleType
-from typing import Any, LiteralString, TypeVar, Self
+from typing import Any, LiteralString, Self, TypeVar
 
-from pydantic import (
-    ConfigDict,
-    BaseModel as PydandticBaseModel,
-    ValidationError as PydanticValidationError,
-)
+from pydantic import BaseModel as PydandticBaseModel, ConfigDict, ValidationError as PydanticValidationError
 
 
 class Role(StrEnum):
@@ -103,20 +99,19 @@ class EncodableModelBase(BaseModel, EncodableBase, ABC):
         if not source.with_suffix(".json").is_file():
             raise EncodingError("The json file does not exist.")
         try:
-            with open(source.with_suffix(".json"), "r") as f:
-                return model_cls.model_validate_json(f.read(), context=context)
+            text = source.with_suffix(".json").read_text()
+            return model_cls.model_validate_json(text, context=context)
         except PydanticValidationError as e:
-            raise EncodingError("Json data does not fit the schema.", detail=str(e))
+            raise EncodingError("Json data does not fit the schema.", detail=str(e)) from e
         except Exception as e:
-            raise EncodingError("Unknown error while decoding the data.", detail=str(e))
+            raise EncodingError("Unknown error while decoding the data.", detail=str(e)) from e
 
     def encode(self, target: Path, role: Role) -> None:
         """Uses pydantic to create a json representation of the object at the targeted file."""
         try:
-            with open(target.with_suffix(".json"), "w") as f:
-                f.write(self.model_dump_json())
+            target.with_suffix(".json").write_text(self.model_dump_json())
         except Exception as e:
-            raise EncodingError("Unkown error while encoding the data.", detail=str(e))
+            raise EncodingError("Unkown error while encoding the data.", detail=str(e)) from e
 
     @classmethod
     def io_schema(cls) -> str:
@@ -258,6 +253,6 @@ def import_file_as_module(path: Path, name: str) -> ModuleType:
         module = module_from_spec(spec)
         sys.modules[spec.name] = module
         spec.loader.exec_module(module)
-        return module
     except Exception as e:
         raise RuntimeError from e
+    return module

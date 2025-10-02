@@ -5,9 +5,9 @@ from unittest.util import safe_repr
 
 from pydantic import ValidationError
 
-from algobattle.problem import InstanceModel, AttributeReference, SelfRef
-from algobattle.util import Role
+from algobattle.problem import AttributeReference, InstanceModel, SelfRef
 from algobattle.types import Ge, Interval, LaxComp, SizeIndex, UniqueItems
+from algobattle.util import Role
 
 
 class ModelCreationTests(TestCase):

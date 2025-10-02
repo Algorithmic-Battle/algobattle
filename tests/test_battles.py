@@ -1,9 +1,11 @@
 """Tests for the Battle types."""
+
+from collections.abc import Iterable
 from enum import Enum
 from itertools import chain, cycle
 from pathlib import Path
 from types import EllipsisType
-from typing import Any, Iterable, TypeVar, Unpack, cast
+from typing import Any, TypeVar, Unpack, cast
 from unittest import IsolatedAsyncioTestCase, TestCase, main
 from uuid import uuid4
 
@@ -12,7 +14,6 @@ from algobattle.match import BattleObserver, EmptyUi
 from algobattle.program import GeneratorResult, Matchup, SolverResult, Team
 from algobattle.util import Encodable, ExceptionInfo, Role, TempDir
 from tests.testsproblem.problem import TestInstance, TestSolution
-
 
 T = TypeVar("T")
 
@@ -148,7 +149,7 @@ class IteratedTests(IsolatedAsyncioTestCase):
             results = chain(results, always(fail))
         handler = TestHandler(battle, results)
         await battle.run_battle(handler, Iterated.Config(rounds=1, maximum_size=1000), 1, self.ui)
-        fought_sizes = list(f.max_size for f in battle.fights)
+        fought_sizes = [f.max_size for f in battle.fights]
         if not total:
             fought_sizes = fought_sizes[: len(sizes)]
         self.assertEqual(sizes, fought_sizes)
@@ -271,7 +272,9 @@ class ImprovingTests(IsolatedAsyncioTestCase):
         handler = await self.run_battle(gen_res, sol_res)
         self.assertEqual(len(handler.data), 3)
         for i, history in enumerate(handler.data):
-            self.assertEqual(history, [FightHistory.Fight(1, g, s) for (g, s) in zip(gen_res[:i], sol_res[:i])])
+            self.assertEqual(
+                history, [FightHistory.Fight(1, g, s) for (g, s) in zip(gen_res[:i], sol_res[:i], strict=True)]
+            )
 
     async def test_sol_none(self) -> None:
         gen_res = [self.gen_res() for _ in range(3)]

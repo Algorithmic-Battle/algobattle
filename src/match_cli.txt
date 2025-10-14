@@ -1,0 +1,24 @@
+Algobattle version 4.0.0
+╔═══════════╦═════════╦════════╗
+║ Generator ║  Solver ║ Result ║
+╠═══════════╬═════════╬════════╣
+║    dogs   ║   cats  ║     12 ║
+║    dogs   ║ otters  ║      0 ║
+║    cats   ║   dogs  ║      0 ║
+║    cats   ║ otters  ║      0 ║
+║  otters   ║   dogs  ║      0 ║
+║  otters   ║   cats  ║      0 ║
+╚═══════════╩═════════╩════════╝
+
+Battle dogs vs cats:
+reached: [12, 0]
+cap: 12
+
+Current fight at size 5:
+Generator: 0.9s / 30.0s ✓
+Solver:    0.5s / 30.0s …
+
+Most recent fights:
+Fight 5 at size 12: 1.0
+Fight 4 at size 11: 1.0
+Fight 3 at size 10: 1.0

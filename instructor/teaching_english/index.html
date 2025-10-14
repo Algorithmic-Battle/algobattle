@@ -1,0 +1,2043 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Algobattle framework, an interactive, easy to use computer science lab course">
+      
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../problem/intro/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>Lab Course Teaching Concept - Algobattle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7Cmonospace:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"monospace"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/termynal.css">
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lab-course-teaching-concept" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Algobattle" class="md-header__button md-logo" aria-label="Algobattle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Algobattle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab Course Teaching Concept
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Benezivas/algobattle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benezivas/algobattle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorial/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorial
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../advanced/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Advanced Topics
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Instructor's Corner
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Algobattle" class="md-nav__button md-logo" aria-label="Algobattle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Algobattle
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Benezivas/algobattle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benezivas/algobattle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorial/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Tutorial
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorial
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installing Algobattle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/programs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Writing programs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/match/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running a match
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Conclusion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../advanced/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/battle_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Battle Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/problems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Problems
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Instructor's Corner
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Instructor's Corner
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Lab Course Teaching Concept
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lab Course Teaching Concept
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#about-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      About this Document
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-is-this-software-made-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      Who is this Software Made for?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-do-i-have-to-know-about-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      What do I have to Know about Licensing?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-many-students-can-the-lab-course-accommodate" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Many Students Can the Lab Course Accommodate?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Idea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teaching-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Teaching Goals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-structure-of-a-semester" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample Structure of a Semester
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grading-of-students" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grading of Students
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grading of Students">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-quality-of-the-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Quality of the Software
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#talks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Talks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-uses-of-the-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Uses of the Software
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further Uses of the Software">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-types-of-battles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Types of Battles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-types-of-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Types of Tasks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous" class="md-nav__link">
+    <span class="md-ellipsis">
+      Miscellaneous
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Miscellaneous">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-bounties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug Bounties
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-issues-during-a-lab-course" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Issues During a Lab Course
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Creating Problems
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Creating Problems
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/problem_file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Creating a Problem File
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    A Complex Example
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/annotations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Type Annotations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../problem/io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Arbitrary I/O Formats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/battle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Battle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/problem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Problem
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#about-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      About this Document
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-is-this-software-made-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      Who is this Software Made for?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-do-i-have-to-know-about-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      What do I have to Know about Licensing?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-many-students-can-the-lab-course-accommodate" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Many Students Can the Lab Course Accommodate?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Idea
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teaching-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Teaching Goals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-structure-of-a-semester" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample Structure of a Semester
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grading-of-students" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grading of Students
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grading of Students">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-quality-of-the-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Quality of the Software
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#talks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Talks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-uses-of-the-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Uses of the Software
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further Uses of the Software">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-types-of-battles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Types of Battles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-types-of-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other Types of Tasks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous" class="md-nav__link">
+    <span class="md-ellipsis">
+      Miscellaneous
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Miscellaneous">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-bounties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug Bounties
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-issues-during-a-lab-course" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Issues During a Lab Course
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="lab-course-teaching-concept">Lab Course Teaching Concept<a class="headerlink" href="#lab-course-teaching-concept" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p class="admonition-title">This page also is available in German</p>
+<p><a class="md-button" href="../teaching_german/">Switch language <img alt="🇩🇪" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f1e9-1f1ea.svg" title=":de:" /></a></p>
+</div>
+<h2 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h2>
+<h3 id="about-this-document">About this Document<a class="headerlink" href="#about-this-document" title="Permanent link">&para;</a></h3>
+<p>This document describes a teaching concept that was developed
+in university teaching. Its goal is to support teachers to use
+the <code>algobattle</code>-tool as well as related software for their
+own teaching. The focus is here on the teaching aspect. For
+an explanation of the technical requirements as well as a manual,
+please consult the <a href="https://algobattle.org/docs">technical
+documentation</a>.</p>
+<h2 id="who-is-this-software-made-for">Who is this Software Made for?<a class="headerlink" href="#who-is-this-software-made-for" title="Permanent link">&para;</a></h2>
+<p>The <code>algobattle</code>-tool has been developed since 2019 by the Theory
+Group of RWTH Aachen University for use in a software programming lab
+course in a bachelor of computer science.  Although this is reflected
+in the <a href="https://github.com/Benezivas/algobattle-problems">collection of pre-made problems</a>,
+nothing speaks against using this tool in other study courses of late
+high-school teaching.</p>
+<p>The project is thus targeted at teachers, for whom we want to ease the
+work to establish a competitive teaching experience. The extremely
+modular nature of the project allows to either cover a wide range of
+different topics or to focus on a specific topic.</p>
+<h2 id="what-do-i-have-to-know-about-licensing">What do I have to Know about Licensing?<a class="headerlink" href="#what-do-i-have-to-know-about-licensing" title="Permanent link">&para;</a></h2>
+<p>The complete software and associated documentation are published under
+a free MIT-license, if not stated otherwise. You can thus use, modify,
+extend or use them, even in a commercial context, without asking
+for permission. We would however appreciate it if you would reference
+us as a source if you do.</p>
+<h2 id="how-many-students-can-the-lab-course-accommodate">How Many Students Can the Lab Course Accommodate?<a class="headerlink" href="#how-many-students-can-the-lab-course-accommodate" title="Permanent link">&para;</a></h2>
+<p>We recommend splitting up your students into groups; from our
+experience groups of six students work best. There then can be an
+arbitrary number of such groups. Do mind of course, that with
+an increase in students, the supervisory effort increases as well.
+With two teaching assistants we were able to manage 18 students
+over the course of a semester, requiring not more than two work
+days in total per week.</p>
+<h2 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h2>
+<h3 id="basic-idea">Basic Idea<a class="headerlink" href="#basic-idea" title="Permanent link">&para;</a></h3>
+<p>The Algorithmic Battle, in its original form, had the aim of providing
+students a practical way to engage with commonly theoretical results
+from their lectures. In computer science, complexity theory is an
+important element: It tells us that for many problems we should not
+expect to find algorithms that are fast, correct and universal at the
+same time.</p>
+<p>This often neglects the fact that such problems do in fact need to be
+solved and indeed do get solved in practice. Especially due to the
+boom of so-called MIP-solvers such as Gurobi, CPLEX and others,
+practical optimization problems are solved and often very fast.</p>
+<p>This observation is based on seeing a problem as a collection of
+all possible instances: For some problems, there are cores that
+consist of subsets of such instances. On the other hand, many other
+subsets do admit solutions that are very easy to find and these seem
+to correlate with practical instances.</p>
+<h3 id="teaching-goals">Teaching Goals<a class="headerlink" href="#teaching-goals" title="Permanent link">&para;</a></h3>
+<p>The focus of the lab course lies in letting the students
+take both perspectives of a solving process. They should learn to
+answer two questions:</p>
+<ul>
+<li>What are "hard instances" of a problem?</li>
+<li>How do I write algorithms that are fast and correct most of the time?</li>
+</ul>
+<p>This means that students should both write code for a <code>generator</code> for
+the creation of hard instances (given an instance size), as well
+as a <code>solver</code>, that takes an instance as an argument and should
+output a good solution within a given time limit.</p>
+<p>Every <code>generator</code> of a team is then matched against the <code>solver</code> of
+another team. In the classical setting, the question is then up to
+which instance size the <code>solver</code> of one team is able to still solve
+the instances generated by the other team. The scoring is then done by
+<em>how much better</em> the winning team is than the other: The highest
+instance size for which an instance of one team still could be solved
+is compared to that of the other, and points are awarded according to
+this ratio. To maximize this relative distance of scores, it is thus
+important on the one hand to write a <code>generator</code> that outputs hard
+instances, in order to ensure that the other teams <code>solver</code> fails
+early. On the other hand, it is just as important to also write a
+strong <code>solver</code>, as not to fail early on instances that should not be
+so hard to solve.</p>
+<p>We see it as particularly encouraging that we do not give any
+limitations on external software used by the students (as long as
+they do not result in legal issues.) Since all student software is
+deployed in docker containers and since one is not artificially held
+back in real life either, the students are actively encouraged to
+research their given problem, related publications and software to
+use in their code. There are only very few limitations that we
+actively enforce:</p>
+<ul>
+<li>Only use software if the license allows you to do so</li>
+<li>No plotting with or spying out other teams</li>
+<li>Do not exploit our framework software (see also <code>Bug Bounties</code>)</li>
+</ul>
+<p>We let the students develop their code in a version control system to
+which we have full observer rights. The students should coordinate
+their coding process and organize themselves, be it by simply talking,
+creating issues or creating branches and pull requests. By having a
+full view of the commit history, one can already see during the
+duration of the lab course whether individual persons do not contribute
+substantially, allowing you to interfere early.</p>
+<p>We additionally demand a full documentation of the development
+process. Every researched idea and every implementation, even if only
+attempted, is to be documented. For this to work, we let every person
+of a team be responsible for the coordination of the documentation
+once during the semester. Every other person of the team then has the
+responsibility to report to the documenting person what they have done.
+The coordinating person thus does not have the responsibility to
+nag their team members: Those who do not report their progress will
+not be part of the documentation and are thus assumed not to have
+contributed anything until proven otherwise.</p>
+<h3 id="sample-structure-of-a-semester">Sample Structure of a Semester<a class="headerlink" href="#sample-structure-of-a-semester" title="Permanent link">&para;</a></h3>
+<p>We next describe the structure of a typical semester-long lab
+course at RWTH Aachen University. This structure of of course
+not in any way binding, but resulted in very positive feedback
+by the students over the past years.</p>
+<p>Every semester starts the same. Shortly before or right at the start
+of the lecture period, we host a kick-off meeting in which we inform
+the students about the format and structure of the lab course.
+We next find a regular time-slot in the week for the weekly meeting
+and assign the students into groups of six. We have a focus on
+putting at most subgroups of three students that already are a peer
+group into one team, to lower the risk of exclusive behavior.</p>
+<p>The first task that we use as a primer is always the same, namely the
+<code>pairsum</code> task, which can be found in the <code>algobattle-problems</code>
+repository. The achieved points in this task do not count towards the
+global rating, the task is meant to get familiar with the framework,
+our software and the format of battles. We do however insist on
+creating a documentation, as described above. As in all subsequent
+tasks, we start scheduling daily automated battles with the current
+state of the student's software after a week, to give them feedback on
+how good or bad their code performs against the code of the other
+teams.</p>
+<p>At the end of this task and every following one, we have a concluding
+meeting. In this meeting, we ask two randomly chosen students to
+(freely) present the ideas of their <code>solver</code> and <code>generator</code> to the
+rest of the students. We expect every student to be informed about
+their software and the development process, which we try to enforce
+by this random selection.</p>
+<p>We then present the overall results of all battles, talk about
+possibly collected <code>Bug Bounties</code> and discuss in an open round
+what the students have learned in the past two weeks. Finally,
+we present the next task.</p>
+<p>The cycle is then always the same: After getting a description of the
+next problem, we let the groups research and implement for a week.
+After this week, we meet with every group separately. In this meeting,
+we discuss their ideas and implementations, as well as possible
+problems. After this meeting, we schedule daily battles until the
+final meeting. The first of these battles does not award points to
+mitigate the consequences of oversights in implementations resulting
+in crashes.</p>
+<p>In a typical semester, there is time for 6-7 tasks of this format
+(<code>pairsum</code> included.) We recommend sticking to six tasks and to use
+the remaining time as a buffer for other tasks. This results in less
+pressure for the students and matches the number of documentations to
+be created.</p>
+<p>Regarding the teaching goals for individual tasks, we roughly follow
+the following scheme of task types:</p>
+<ol>
+<li><code>pairsum</code> as a warm-up task</li>
+<li>A classical, NP-complete problem to encourage research</li>
+<li>Problem in P for strong optimizations of data structures and algorithms</li>
+<li>Approximation problem with an approximation ratio that should not allow for polynomial algorithms</li>
+<li>Non-classical, NP-complete problem to encourage the use of MIP-solvers</li>
+<li>Wildcard problem, e.g. strongly limited Memory, problem in FPT,...</li>
+</ol>
+<p>After the last task, the lab course ends, coinciding with the end of
+the lecture period. Afterwards, the grading process starts.</p>
+<h2 id="grading-of-students">Grading of Students<a class="headerlink" href="#grading-of-students" title="Permanent link">&para;</a></h2>
+<p>If you would like to grad the participants of the lab course, we give
+a few pointers on what you could base this grading on.  We already
+check the following criteria in the middle of the semester, to spot
+and help individuals that already struggle at this point.</p>
+<h3 id="overall-quality-of-the-software">Overall Quality of the Software<a class="headerlink" href="#overall-quality-of-the-software" title="Permanent link">&para;</a></h3>
+<p>This allows for a first impression for grading the group. Central
+questions are: How much effort was put into the code during the course
+of the semester? A group that tends to perform bad in battles, but
+researched and implemented many different approaches should in our
+opinion not automatically be graded badly.</p>
+<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<p>The person responsible for the documentation is of course reliant on
+the quality and contents provided by their other group members. It is
+commonly very clearly visible how much each member contributed during
+each week. We grade students that exclusively focused on one kind of
+work during the whole semester, e.g. <em>only</em> implementation or <em>only</em>
+research, worse than others.</p>
+<h3 id="talks">Talks<a class="headerlink" href="#talks" title="Permanent link">&para;</a></h3>
+<p>If a student was clearly badly prepared for holding a talk, this
+results in worse grading. A bad preparation commonly coincides
+with little participation in the task.</p>
+<h3 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h3>
+<p>Since this is a software lab, we do not let anyone pass that did not
+contribute to the implementation work, be it by pair programming or
+individual contributions. This is easily checkable by the commit
+history of a group.</p>
+<h2 id="further-uses-of-the-software">Further Uses of the Software<a class="headerlink" href="#further-uses-of-the-software" title="Permanent link">&para;</a></h2>
+<p>We want to emphasize that the <code>algobattle</code>-tool was written with
+modularity in mind regarding the nature of tasks and the inner nature
+of battles. While we as the original authors have a strong bias
+towards problems of theoretical computer science, nothing speaks
+against other types of battles and problems.</p>
+<h3 id="other-types-of-battles">Other Types of Battles<a class="headerlink" href="#other-types-of-battles" title="Permanent link">&para;</a></h3>
+<p>So far, we have assumed in our description that a <code>generator</code> and
+<code>solver</code> battle on ever increasing instance sizes, until one of them
+fails. Points are then awarded on the relative distance between the
+largest solved instances. This is however only the description of the
+default <code>battle type</code>, the <code>iterated</code> type.</p>
+<p>Another, alternative <code>battle type</code> shipped with the software is the
+<code>averaged</code> type, in which only instances of a fixed instance size are
+to be solved a given number of times within a time limit. The points
+are then awarded based on the average solution quality of a solver.</p>
+<p>We encourage you to create your own <code>battle type</code> to model different
+abstractions of <code>generator</code>s and <code>solver</code>s fighting one another.</p>
+<h3 id="other-types-of-tasks">Other Types of Tasks<a class="headerlink" href="#other-types-of-tasks" title="Permanent link">&para;</a></h3>
+<p>In most of our <a href="https://github.com/Benezivas/algobattle-problems">sample tasks</a>, the input
+and output of <code>generator</code>s and <code>solver</code>s are simple json-files
+containing text. The I/O specification does however allow for arbitrary
+file- and folder structures to be passed. Thus, other files such as
+multimedia content in the form of audio or pictures can be specified
+as the input and output of <code>generator</code>s and <code>solver</code>s.</p>
+<h2 id="miscellaneous">Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permanent link">&para;</a></h2>
+<h3 id="bug-bounties">Bug Bounties<a class="headerlink" href="#bug-bounties" title="Permanent link">&para;</a></h3>
+<p>We encourage our students to attack and exploit the
+<code>algobattle</code>-framework as well as the code of the tasks that we
+provide them. We are interested in inputs that allow students to crash
+our code, the <code>solver</code> and <code>generators</code> of other teams (independent of
+the contents of them) or even exploit the framework to gain access to
+the code of other groups. As mentioned before, we demand these bugs
+not to be exploited in order to achieve a better standing. We do
+however award additional points for finding and reporting the bugs in
+a reproducible manner. Only the first group to find and report a bug
+is awarded points for it. The number of points is based on the gravity
+of the bug found.</p>
+<p>The big advantage of this approach is to reward the natural curiosity
+to explore and exploit systems in a constructive way. A positive
+consequence is that we are then to implement more test cases for the
+found bugs.</p>
+<h3 id="known-issues-during-a-lab-course">Known Issues During a Lab Course<a class="headerlink" href="#known-issues-during-a-lab-course" title="Permanent link">&para;</a></h3>
+<p>At some point, students learn that MIP-solvers exist. This is
+disadvantageous for many problems, as they are rather efficient in
+practice and do not encourage further research. We thus recommend
+creating tasks that make MIP-solvers, or other kinds of efficient,
+general solvers, unattractive. In the case of MIP-solvers it commonly
+also helps to reduce the amount of available memory, as they often
+require a lot of it.</p>
+<h3 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h3>
+<p><a href="https://algobattle.org">Official Website</a>
+<a href="https://github.com/Benezivas/algobattle">algobattle-Framework (Github)</a><br />
+<a href="https://github.com/Benezivas/algobattle-problems">Collection of problems for algobattle (Github)</a><br />
+<a href="https://github.com/Benezivas/algobattle-web">Web-framework for algobattle (Github)</a><br />
+<a href="https://algobattle.org/docs">Technical Documentation</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../js/termynal.js"></script>
+      
+        <script src="../../js/custom.js"></script>
+      
+    
+  </body>
+</html>

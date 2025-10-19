@@ -1,5 +1,8 @@
 """Tests for all docker functions."""
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
+from time import time
 from unittest import IsolatedAsyncioTestCase, main as run_tests
 
 from algobattle.match import AlgobattleConfig, MatchConfig, RunConfig
@@ -8,6 +11,15 @@ from algobattle.util import BuildError
 
 from . import testsproblem
 from .testsproblem.problem import TestInstance, TestProblem, TestSolution
+
+
+@contextmanager
+def run_within(seconds: float) -> Iterator[None]:
+    start = time()
+    try:
+        yield
+    finally:
+        assert time() - start <= seconds
 
 
 class ProgramTests(IsolatedAsyncioTestCase):
@@ -39,7 +51,7 @@ class ProgramTests(IsolatedAsyncioTestCase):
     async def test_build_timeout(self):
         """A container's build step times out."""
         config = AlgobattleConfig(match=MatchConfig(problem="Test Problem", build_timeout=1.5)).as_prog_config()
-        with self.assertRaises(BuildError, msg="Build ran into a timeout."):
+        with self.assertRaises(BuildError, msg="Build ran into a timeout."), run_within(2):
             await Generator.build(path=self.problem_path / "build_timeout", problem=TestProblem, config=config)
 
     async def test_gen_lax_timeout(self):
@@ -47,7 +59,8 @@ class ProgramTests(IsolatedAsyncioTestCase):
         with await Generator.build(
             path=self.problem_path / "generator_timeout", problem=TestProblem, config=self.config_short
         ) as gen:
-            res = await gen.run(5)
+            with run_within(2.5):
+                res = await gen.run(5)
             self.assertIsNone(res.error)
 
     async def test_gen_strict_timeout(self):
@@ -57,7 +70,8 @@ class ProgramTests(IsolatedAsyncioTestCase):
             problem=TestProblem,
             config=self.config_strict,
         ) as gen:
-            res = await gen.run(5)
+            with run_within(2.5):
+                res = await gen.run(5)
             assert res.error is not None
             self.assertEqual(res.error.type, "ExecutionTimeout")
 
@@ -102,7 +116,8 @@ class ProgramTests(IsolatedAsyncioTestCase):
         with await Solver.build(
             path=self.problem_path / "solver_timeout", problem=TestProblem, config=self.config_strict
         ) as sol:
-            res = await sol.run(self.instance, 5)
+            with run_within(2.5):
+                res = await sol.run(self.instance, 5)
             assert res.error is not None
             self.assertEqual(res.error.type, "ExecutionTimeout")
 
@@ -111,7 +126,8 @@ class ProgramTests(IsolatedAsyncioTestCase):
         with await Solver.build(
             path=self.problem_path / "solver_timeout", problem=TestProblem, config=self.config_short
         ) as sol:
-            res = await sol.run(self.instance, 5)
+            with run_within(2.5):
+                res = await sol.run(self.instance, 5)
             self.assertIsNone(res.error)
 
     async def test_sol_exec_err(self):

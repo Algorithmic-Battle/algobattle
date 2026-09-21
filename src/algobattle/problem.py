@@ -8,21 +8,7 @@ from inspect import Parameter, Signature, signature
 from itertools import chain
 from math import inf, isnan
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    Generic,
-    Literal,
-    ParamSpec,
-    Protocol,
-    Self,
-    TypeVar,
-    cast,
-    get_args,
-    overload,
-    runtime_checkable,
-)
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Protocol, Self, cast, get_args, overload, runtime_checkable
 
 from annotated_types import GroupedMetadata
 from pydantic import GetCoreSchemaHandler, ValidationInfo
@@ -58,11 +44,7 @@ class Instance(Encodable, ABC):
         return
 
 
-InstanceT = TypeVar("InstanceT", bound=Instance, contravariant=True)
-P = ParamSpec("P")
-
-
-class Solution(EncodableBase, ABC, Generic[InstanceT]):
+class Solution[InstanceT: Instance = Any](EncodableBase, ABC):
     """A proposed solution for an instance of this problem."""
 
     @classmethod
@@ -100,7 +82,7 @@ class Solution(EncodableBase, ABC, Generic[InstanceT]):
         return 1
 
 
-def minimize(function: Callable[P, float]) -> Callable[P, float]:
+def minimize[**P](function: Callable[P, float]) -> Callable[P, float]:
     """Wraps a score function such that smaller scores are considered better."""
 
     @wraps(function)
@@ -113,23 +95,16 @@ def minimize(function: Callable[P, float]) -> Callable[P, float]:
     return inner
 
 
-def maximize(function: Callable[P, float]) -> Callable[P, float]:
+def maximize[**P](function: Callable[P, float]) -> Callable[P, float]:
     """No-op decorator to indicate that bigger scores are considered better."""
     return function
 
 
-SolutionT = TypeVar("SolutionT", bound=Solution[Any])
-
-
-_I = TypeVar("_I", bound=Instance, contravariant=True)
-_S = TypeVar("_S", bound=Solution[Instance], contravariant=True)
-
-
 @runtime_checkable
-class ScoreFunctionWithSol(Protocol, Generic[_I, _S]):
+class ScoreFunctionWithSol[I: Instance, S: Solution[Instance]](Protocol):
     """Type of `score` function passed to Problem if `with_solution` is set."""
 
-    def __call__(self, instance: _I, *, generator_solution: _S, solver_solution: _S) -> float:
+    def __call__(self, instance: I, *, generator_solution: S, solver_solution: S) -> float:
         """Calculates how well a solution solves this problem instance.
 
         Args:
@@ -145,10 +120,10 @@ class ScoreFunctionWithSol(Protocol, Generic[_I, _S]):
 
 
 @runtime_checkable
-class ScoreFunctionNoSol(Protocol, Generic[_I, _S]):
+class ScoreFunctionNoSol[I: Instance, S: Solution](Protocol):
     """Type of `score` function passed to Problem if `with_solution` is not set."""
 
-    def __call__(self, instance: _I, *, solution: _S) -> float:
+    def __call__(self, instance: I, *, solution: S) -> float:
         """Calculates how well a solution solves this problem instance.
 
         Args:
@@ -162,24 +137,24 @@ class ScoreFunctionNoSol(Protocol, Generic[_I, _S]):
         ...
 
 
-ScoreFunction = ScoreFunctionWithSol[InstanceT, SolutionT] | ScoreFunctionNoSol[InstanceT, SolutionT]
+type ScoreFunction[I: Instance, S: Solution] = ScoreFunctionWithSol[I, S] | ScoreFunctionNoSol[I, S]
 
 
 @overload
-def default_score(instance: Instance, *, solution: Solution[Any]) -> float:
+def default_score(instance: Instance, *, solution: Solution) -> float:
     ...
 
 
 @overload
-def default_score(instance: Instance, *, generator_solution: SolutionT, solver_solution: SolutionT) -> float:
+def default_score[S: Solution](instance: Instance, *, generator_solution: S, solver_solution: S) -> float:
     ...
 
 
-def default_score(
+def default_score[S: Solution](
     instance: Instance,
-    solution: SolutionT | None = None,
-    generator_solution: SolutionT | None = None,
-    solver_solution: SolutionT | None = None,
+    solution: S | None = None,
+    generator_solution: S | None = None,
+    solver_solution: S | None = None,
 ) -> float:
     """Calculates how well a solution solves this problem instance.
 
@@ -220,43 +195,43 @@ class Problem:
     """The definition of a problem."""
 
     @overload
-    def __init__(
+    def __init__[I: Instance, S: Solution](
         self,
         *,
         name: str,
-        instance_cls: type[InstanceT],
-        solution_cls: type[SolutionT],
+        instance_cls: type[I],
+        solution_cls: type[S],
         min_size: int = 0,
         with_solution: Literal[True] = True,
-        score_function: ScoreFunctionWithSol[InstanceT, SolutionT] = default_score,
-        test_instance: InstanceT | None = None,
+        score_function: ScoreFunctionWithSol[I, S] = default_score,
+        test_instance: I | None = None,
     ) -> None:
         ...
 
     @overload
-    def __init__(
+    def __init__[I: Instance, S: Solution](
         self,
         *,
         name: str,
-        instance_cls: type[InstanceT],
-        solution_cls: type[SolutionT],
+        instance_cls: type[I],
+        solution_cls: type[S],
         min_size: int = 0,
         with_solution: Literal[False],
-        score_function: ScoreFunctionNoSol[InstanceT, SolutionT] = default_score,
-        test_instance: InstanceT | None = None,
+        score_function: ScoreFunctionNoSol[I, S] = default_score,
+        test_instance: I | None = None,
     ) -> None:
         ...
 
-    def __init__(
+    def __init__[I: Instance, S: Solution](
         self,
         *,
         name: str,
-        instance_cls: type[InstanceT],
-        solution_cls: type[SolutionT],
+        instance_cls: type[I],
+        solution_cls: type[S],
         min_size: int = 0,
         with_solution: bool = True,
-        score_function: ScoreFunction[InstanceT, SolutionT] = default_score,
-        test_instance: InstanceT | None = None,
+        score_function: ScoreFunction[I, S] = default_score,
+        test_instance: I | None = None,
     ) -> None:
         """The definition of a problem.
 
@@ -289,22 +264,22 @@ class Problem:
     _problems: ClassVar[dict[str, Self]] = {}
 
     @overload
-    def score(self, instance: InstanceT, *, solution: Solution[InstanceT]) -> float:
+    def score[I: Instance](self, instance: I, *, solution: Solution[I]) -> float:
         ...
 
     @overload
-    def score(
-        self, instance: InstanceT, *, generator_solution: Solution[InstanceT], solver_solution: Solution[InstanceT]
+    def score[I: Instance](
+        self, instance: I, *, generator_solution: Solution[I], solver_solution: Solution[I]
     ) -> float:
         ...
 
-    def score(
+    def score[I: Instance](
         self,
-        instance: Instance,
+        instance: I,
         *,
-        solution: SolutionT | None = None,
-        generator_solution: SolutionT | None = None,
-        solver_solution: SolutionT | None = None,
+        solution: Solution[I] | None = None,
+        generator_solution: Solution[I] | None = None,
+        solver_solution: Solution[I] | None = None,
     ) -> float:
         """Helper function to call self.score_function with easier to use overloads."""
         if self.with_solution:
@@ -366,7 +341,7 @@ class Problem:
             case [e]:
                 loaded: object = e.load()
                 if not isinstance(loaded, cls):
-                    raise ValueError( # noqa: TRY004
+                    raise ValueError( # ruff: ignore[type-check-without-type-error]
                         f"The entrypoint '{name}' doesn't point to a problem but a {loaded.__class__.__qualname__}."
                     )
                 return loaded
@@ -548,11 +523,11 @@ class InstanceModel(InstanceSolutionModel, EncodableModel, Instance, ABC):
     pass
 
 
-class SolutionModel(InstanceSolutionModel, Solution[InstanceT], ABC):
+class SolutionModel[I: Instance](InstanceSolutionModel, Solution[I], ABC):
     """A solution that can easily be parsed to/from a json file."""
 
     @classmethod
-    def decode(cls, source: Path, max_size: int, role: Role, instance: InstanceT) -> Self:
+    def decode(cls, source: Path, max_size: int, role: Role, instance: I) -> Self:
         """Uses pydantic to create a python object from a `.json` file."""
         context: dict[str, Any] = {"max_size": max_size, "role": role, "instance": instance}
         return cls._decode(cls, source, **context)

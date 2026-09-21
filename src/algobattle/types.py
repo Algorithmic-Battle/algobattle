@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import cache, cached_property
 from itertools import pairwise
 from sys import float_info
-from typing import Annotated, Any, ClassVar, Generic, Literal, TypedDict, TypeVar, overload
+from typing import Annotated, Any, ClassVar, Literal, TypedDict, overload
 
 import annotated_types as at
 import pydantic._internal._validators as validators
@@ -438,7 +438,7 @@ class DirectedGraph(InstanceModel):
         """The set of edges in this graph."""
         return set(self.edges)
 
-    @cache # noqa: B019
+    @cache # ruff: ignore[cached-instance-method]
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         res = set[Vertex]()
@@ -474,7 +474,7 @@ class UndirectedGraph(DirectedGraph):
         """
         return set(self.edges) | {(v, u) for (u, v) in self.edges}
 
-    @cache # noqa: B019
+    @cache # ruff: ignore[cached-instance-method]
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         # more efficient specialization
@@ -502,10 +502,7 @@ class EdgeLen:
         return cls._validator.__get_pydantic_core_schema__(source_type, handler)
 
 
-Weight = TypeVar("Weight")
-
-
-class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
+class EdgeWeights[Weight](DirectedGraph, BaseModel):
     """Mixin for graphs with weighted edges."""
 
     edge_weights: Annotated[list[Weight], EdgeLen]
@@ -515,7 +512,7 @@ class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
         """Iterate over all edges and their weights."""
         return zip(self.edges, self.edge_weights, strict=True)
 
-    @cache # noqa: B019
+    @cache # ruff: ignore[cached-instance-method]
     def weight(self, edge: Edge | tuple[Vertex, Vertex]) -> Weight:
         """Returns the weight of an edge.
 
@@ -536,7 +533,7 @@ class EdgeWeights(DirectedGraph, BaseModel, Generic[Weight]):
         return self.edge_weights[edge]
 
 
-class VertexWeights(DirectedGraph, BaseModel, Generic[Weight]):
+class VertexWeights[Weight](DirectedGraph, BaseModel):
     """Mixin for graphs with weighted vertices."""
 
     vertex_weights: Annotated[list[Weight], SizeLen]

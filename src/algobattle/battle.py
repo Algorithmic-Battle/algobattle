@@ -13,20 +13,7 @@ from inspect import isclass
 from itertools import count
 from pathlib import Path
 from types import EllipsisType
-from typing import (
-    TYPE_CHECKING,
-    Annotated,
-    Any,
-    ClassVar,
-    Literal,
-    ParamSpec,
-    Protocol,
-    Self,
-    TypeAlias,
-    TypeVar,
-    Unpack,
-    overload,
-)
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, Protocol, Self, Unpack, overload
 
 from annotated_types import Ge
 from pydantic import (
@@ -54,7 +41,7 @@ from algobattle.program import (
 )
 from algobattle.util import BaseModel, Encodable, EncodableModel, ExceptionInfo, Role
 
-_BattleConfig: TypeAlias = Any
+type _BattleConfig = Any
 """Type alias used to generate correct typings when subclassing :class:`Battle`.
 
 Each battle type's :meth:`run` method is guaranteed to be passed an instance of its own :class:`BattleConfig` object.
@@ -62,8 +49,6 @@ But due to limitations in the python type system we are currently not able to ex
 When creating your own battle type it is recommended to not use this alias and instead use the :class:`BattleConfig` of
 the new battle type directly.
 """
-T = TypeVar("T")
-P = ParamSpec("P")
 _type = type
 
 
@@ -190,7 +175,7 @@ class FightHandler:
     problem: Problem
     generator: Generator
     solver: Solver
-    battle: "Battle"
+    battle: Battle
     ui: FightUi
     set_cpus: str | None
     log_config: ProgramLogConfigView
@@ -360,7 +345,7 @@ class BattleUi(Protocol):
     """Provides an interface for :class:`Battle` to update the Ui."""
 
     @abstractmethod
-    def update_battle_data(self, data: "Battle.UiData") -> None:
+    def update_battle_data(self, data: Battle.UiData) -> None:
         """Passes new custom display data to the Ui.
 
         See :class:`Battle.UiData` for further details.
@@ -469,7 +454,7 @@ class Battle(BaseModel):
         """
 
     @staticmethod
-    def all() -> dict[str, type["Battle"]]:
+    def all() -> dict[str, type[Battle]]:
         """Returns a dictionary mapping the names of all registered battle types to their python classes.
 
         It includes all subclasses of :class:`Battle` that have been initialized so far, including ones exposed to the
@@ -674,7 +659,7 @@ class FightHistory(Encodable):
         generator: GeneratorResult
         solver: SolverResult | None
 
-    history: list[Fight] = field(default_factory=list, init=False)
+    history: list[FightHistory.Fight] = field(default_factory=list, init=False)
     scores: set[Role]
     instances: set[Role]
     gen_sols: set[Role]
@@ -714,13 +699,13 @@ class Improving(Battle):
         """Number of fights that will be fought."""
         weighting: Annotated[float, Ge(0)] = 1.1
         """How much each successive fight should be weighted more than the previous."""
-        scores: set[Role] = {Role.generator, Role.solver}  # noqa: RUF012
+        scores: set[Role] = {Role.generator, Role.solver}  # ruff: ignore[mutable-class-default]
         """Who to show each fight's scores to."""
-        instances: set[Role] = {Role.generator, Role.solver}  # noqa: RUF012
+        instances: set[Role] = {Role.generator, Role.solver}  # ruff: ignore[mutable-class-default]
         """Who to show the instances to."""
-        generator_solutions: set[Role] = {Role.generator}  # noqa: RUF012
+        generator_solutions: set[Role] = {Role.generator}  # ruff: ignore[mutable-class-default]
         """Who to show the generator's solutions to, if the problem requires them."""
-        solver_solutions: set[Role] = {Role.solver}  # noqa: RUF012
+        solver_solutions: set[Role] = {Role.solver}  # ruff: ignore[mutable-class-default]
         """Who to show the solver's solutions to."""
 
     class UiData(Battle.UiData):

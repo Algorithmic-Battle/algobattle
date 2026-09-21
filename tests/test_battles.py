@@ -5,7 +5,7 @@ from enum import Enum
 from itertools import chain, cycle
 from pathlib import Path
 from types import EllipsisType
-from typing import Any, TypeVar, Unpack, cast
+from typing import Any, Unpack, cast
 from unittest import IsolatedAsyncioTestCase, TestCase, main
 from uuid import uuid4
 
@@ -15,10 +15,8 @@ from algobattle.program import GeneratorResult, Matchup, SolverResult, Team
 from algobattle.util import Encodable, ExceptionInfo, Role, TempDir
 from tests.testsproblem.problem import TestInstance, TestSolution
 
-T = TypeVar("T")
 
-
-def always(val: T) -> "cycle[T]":
+def always[T](val: T) -> cycle[T]:
     """Shorthand for an iterator always yielding a single value."""
     return cycle([val])
 

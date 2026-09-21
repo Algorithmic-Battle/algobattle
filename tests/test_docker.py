@@ -1,5 +1,5 @@
 """Tests for all docker functions."""
-from collections.abc import Iterator
+from collections.abc import Generator as PyGenerator
 from contextlib import contextmanager
 from pathlib import Path
 from time import time
@@ -14,7 +14,7 @@ from .testsproblem.problem import TestInstance, TestProblem, TestSolution
 
 
 @contextmanager
-def run_within(seconds: float) -> Iterator[None]:
+def run_within(seconds: float) -> PyGenerator[None]:
     start = time()
     try:
         yield

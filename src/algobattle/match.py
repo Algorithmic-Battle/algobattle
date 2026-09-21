@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from functools import cached_property
 from itertools import combinations
 from pathlib import Path
-from typing import Annotated, Any, ClassVar, Literal, Protocol, Self, TypeAlias, TypeVar, cast
+from typing import Annotated, Any, ClassVar, Literal, Protocol, Self, TypedDict, TypeVar, cast, override
 
 from anyio import CapacityLimiter, create_task_group
 from anyio.to_thread import current_default_thread_limiter
@@ -27,7 +27,6 @@ from pydantic import (
 from pydantic.types import PathType
 from pydantic_core import CoreSchema
 from pydantic_core.core_schema import no_info_after_validator_function, union_schema
-from typing_extensions import TypedDict, override
 
 from algobattle.battle import (
     Battle,
@@ -70,7 +69,7 @@ class MatchupStr:
 class Match(BaseModel):
     """The Result of a whole Match."""
 
-    config: "AlgobattleConfig" = Field(exclude=True)
+    config: AlgobattleConfig = Field(exclude=True)
     active_teams: list[str] = Field(default_factory=list)
     excluded_teams: dict[str, ExceptionInfo] = Field(default_factory=dict)
     battles: dict[MatchupStr, SerializeAsAny[Battle]] = Field(default_factory=dict)
@@ -81,7 +80,7 @@ class Match(BaseModel):
         matchup: Matchup,
         problem: Problem,
         cpus: list[str | None],
-        ui: "Ui",
+        ui: Ui,
         limiter: CapacityLimiter,
     ) -> None:
         async with limiter:
@@ -111,7 +110,7 @@ class Match(BaseModel):
 
     async def run(
         self,
-        ui: "Ui | None" = None,
+        ui: Ui | None = None,
     ) -> Self:
         """Runs a match with the given config settings and problem type.
 
@@ -654,7 +653,7 @@ class TeamInfo(BaseModel):
     solver: RelativePath
 
 
-TeamInfos: TypeAlias = dict[str, TeamInfo]
+type TeamInfos = dict[str, TeamInfo]
 
 
 def _empty_default() -> Any:

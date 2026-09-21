@@ -180,7 +180,7 @@ class GeneratorResult(SolverResult):
     instance: Instance | None = None
 
 
-ProgramResult = GeneratorResult | SolverResult
+type ProgramResult = GeneratorResult | SolverResult
 
 
 @dataclass
@@ -207,7 +207,7 @@ class Program(ABC):
 
     @classmethod
     @contextmanager
-    def _setup_docker_env(cls, source: Path) -> PyGenerator[tuple[Path, str | None], None, None]:
+    def _setup_docker_env(cls, source: Path) -> PyGenerator[tuple[Path, str | None]]:
         """Creates a folder containing the actual docker environment used to build a program."""
         if not source.exists():
             raise ValueError
@@ -537,7 +537,7 @@ class Generator(Program):
                 except Exception as e:
                     raise ValidationError("Unknown error thrown during instance validation.", detail=str(e)) from e
                 if instance.size > max_size:
-                    raise ValidationError(  # noqa: TRY301
+                    raise ValidationError(  # ruff: ignore[raise-within-try]
                         "Instance is too large.", detail=f"Generated: {instance.size}, maximum: {max_size}"
                     )
                 if self.problem.with_solution:
@@ -702,7 +702,7 @@ class Team:
         problem: Problem,
         config: ProgramConfigView,
         ui: BuildUi,
-    ) -> "Team":
+    ) -> Team:
         """Builds the specified docker files into images and return the corresponding team.
 
         Args:

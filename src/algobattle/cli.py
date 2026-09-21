@@ -15,12 +15,10 @@ from pathlib import Path
 from random import choice
 from shutil import rmtree
 from subprocess import PIPE, Popen
-from typing import Annotated, Any, ClassVar, Literal, Self, cast
+from typing import Annotated, Any, ClassVar, Literal, Self, cast, override
 from zipfile import ZipFile
 
 from anyio import run as run_async_fn
-from click import Choice
-from click.core import Context, Parameter
 from pydantic import Field, TypeAdapter, ValidationError
 from rich.columns import Columns
 from rich.console import Console, Group, RenderableType
@@ -47,7 +45,6 @@ from tomlkit import TOMLDocument, comment, dumps as dumps_toml, nl as toml_newli
 from tomlkit.exceptions import ParseError
 from tomlkit.items import Table as TomlTable
 from typer import Abort, Argument, Option, Typer, get_app_dir, launch
-from typing_extensions import override
 
 from algobattle.battle import Battle
 from algobattle.match import AlgobattleConfig, EmptyUi, Match, MatchConfig, MatchupStr, ProjectConfig, TeamInfo, Ui
@@ -224,16 +221,6 @@ def _init_program(target: Path, lang: Language, args: PartialTemplateArgs, role:
     console.print(f"Created a {lang} {role} in {dir}")
 
 
-class ClickLanguage(Choice):
-    """Used to move the language list into the help text epilog."""
-
-    def __init__(self, case_sensitive: bool = True) -> None:
-        super().__init__([lang.value for lang in Language], case_sensitive)
-
-    def get_metavar(self, param: Parameter, ctx: Context) -> str:
-        return "LANGUAGE"
-
-
 @app.command(epilog=f"Supported languages are: {', '.join(Language)}.")
 def init(
     target: Annotated[Path | None, Argument(file_okay=False, writable=True, help="The folder to initialize.")] = None,
@@ -247,15 +234,15 @@ def init(
     ] = None,
     language: Annotated[
         Language | None,
-        Option("--language", "-l", help="The language to use for the programs.", click_type=ClickLanguage()),
+        Option("--language", "-l", help="The language to use for the programs."),
     ] = None,
     generator: Annotated[
         Language | None,
-        Option("--generator", "-g", help="The language to use for the generator.", click_type=ClickLanguage()),
+        Option("--generator", "-g", help="The language to use for the generator."),
     ] = None,
     solver: Annotated[
         Language | None,
-        Option("--solver", "-s", help="The language to use for the solver.", click_type=ClickLanguage()),
+        Option("--solver", "-s", help="The language to use for the solver."),
     ] = None,
     schemas: Annotated[bool, Option(help="Whether to also save the problem's IO schemas.")] = False,
     new: Annotated[
@@ -589,7 +576,7 @@ def package_problem(
     try:
         with console.status("Loading problem"):
             # we need to access the property so that it gets loaded
-            parsed_config.loaded_problem # noqa: B018
+            parsed_config.loaded_problem # ruff: ignore[useless-expression]
     except ValueError as e:
         console.print(f"[error]Couldn't load the problem file[/]\nError: {e}")
         raise Abort from e

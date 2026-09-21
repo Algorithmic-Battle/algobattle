@@ -1,0 +1,30 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.{{ team_normalized }}</groupId>
+  <artifactId>{{ program }}</artifactId>
+  <name>{{program.capitalize()}} for the {{ problem }} problem.</name>
+
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+  <build>
+    <finalName>{{ program }}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <outputDirectory>/</outputDirectory>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <!-- here we specify that we want to use the main method within the App class -->
+              <mainClass>com.{{ team_normalized }}.{{ program.capitalize() }}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,16 @@
+# the from line specifies a base image to use, most languages publish their own ones with their runtime preinstalled
+FROM alpine
+
+# change the cwd to some new directory for all following commands
+WORKDIR /algobattle
+# copy our source code into this directory
+# note the trailing slash, docker needs it to know that we're trying to copy to a directory and not a file
+COPY . ./
+# compile our program during the build step so we're ready to go when the container runs and won't lose any time
+RUN echo "building the {{ program }}"
+
+# run our program from the root directory
+WORKDIR /
+# specify the command that will be run once the container is started
+# using the '["program", "arg", "as", "list"]' syntax is better here than 'program arg as list'
+CMD [ "echo", "running the {{program}}" ]

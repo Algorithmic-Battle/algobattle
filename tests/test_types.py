@@ -1,4 +1,5 @@
 """Tests for pydantic parsing types."""
+
 from typing import Annotated, Any
 from unittest import TestCase, main
 from unittest.util import safe_repr

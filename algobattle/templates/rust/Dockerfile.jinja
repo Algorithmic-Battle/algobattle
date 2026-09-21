@@ -1,9 +1,0 @@
-FROM rust
-
-WORKDIR /algobattle
-COPY Cargo.toml ./
-COPY src src/
-RUN cargo install --path .
-
-WORKDIR /
-CMD [ "{{ program }}" ]

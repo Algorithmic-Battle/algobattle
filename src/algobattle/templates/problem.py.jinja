@@ -1,0 +1,31 @@
+"""The {{ name }} problem module."""
+from algobattle.problem import Problem, InstanceModel, SolutionModel, maximize
+from algobattle.util import Role
+
+
+class Instance(InstanceModel):
+    """Instances of {{ name }}."""
+
+    ...
+
+    @property
+    def size(self) -> int:
+        ...
+
+
+class Solution(SolutionModel[Instance]):
+    """Solutions of {{ name }}."""
+
+    ...
+
+    @maximize
+    def score(self, instance: Instance, role: Role) -> float:
+        ...
+
+
+Problem(
+    name="{{ name }}",
+    min_size=1,
+    instance_cls=Instance,
+    solution_cls=Solution,
+)

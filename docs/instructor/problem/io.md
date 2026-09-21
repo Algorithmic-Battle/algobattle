@@ -22,14 +22,14 @@ from algobattle.problem import Problem, Instance, SolutionModel
 
 Animal = Literal["Cat", "Dog", "Duck", "Stingray", "Albatross", "Snake"]
 
+
 class MyInstance(Instance):
     """Instances of Animal Detection."""
 
     ...
 
     @property
-    def size(self) -> int:
-        ...
+    def size(self) -> int: ...
 
 
 class MySolution(SolutionModel[MyInstance]):
@@ -75,6 +75,7 @@ from PIL import Image
 
 Animal = Literal["Cat", "Dog", "Duck", "Stingray", "Albatross", "Snake"]
 
+
 @dataclass
 class MyInstance(Instance):
     """Instances of Animal Detection."""
@@ -93,7 +94,7 @@ class MySolution(SolutionModel[MyInstance]):
 
     def validate_solution(self, instance: MyInstance, role: Role) -> None:
         super().validate_solution(instance, role)
-        ... # check that the correct animal is pictured
+        ...  # check that the correct animal is pictured
 
 
 Problem(
@@ -127,8 +128,8 @@ class MyInstance(Instance):
         return max(self.image.width, self.image.width)
 
     def encode(self, target: Path, role: Role) -> None:
-        full_path = target.with_suffix(".png") # (1)!
-        self.image.save(full_path) # (2)!
+        full_path = target.with_suffix(".png")  # (1)!
+        self.image.save(full_path)  # (2)!
 ```
 
 1. Add the `.png` file extension
@@ -168,14 +169,14 @@ class MyInstance(Instance):
 
     @classmethod
     def decode(cls, source: Path, max_size: int, role: Role) -> Self:
-        full_path = source.with_suffix(".png") # (1)!
+        full_path = source.with_suffix(".png")  # (1)!
         try:
-            image = Image.open(full_path) # (2)!
+            image = Image.open(full_path)  # (2)!
         except FileNotFoundError:
             raise EncodingError("The image file does not exist.")
         except UnidentifiedImageError:
             raise EncodingError("The image cannot be decoded.")
-        return cls(image) # (3)!
+        return cls(image)  # (3)!
 ```
 
 1. Add the same file extension we used when encoding the data.
@@ -202,10 +203,8 @@ base classes to decode json files we also apply Pydantic validation as part of t
 
     ```py
     class ExampleSolution(Solution[ExampleInstance]):
-
         @classmethod
-        def decode(cls, source: Path, max_size: int, role: Role, instance: ExampleInstance) -> Self:
-            ...
+        def decode(cls, source: Path, max_size: int, role: Role, instance: ExampleInstance) -> Self: ...
     ```
 
 ## Specifying the I/O Schema
@@ -221,8 +220,6 @@ This is the signature of this method:
 
 ```py
 class ExampleInstance(Instance):
-
     @classmethod
-    def io_schema(cls) -> str | None:
-        ...
+    def io_schema(cls) -> str | None: ...
 ```

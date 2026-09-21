@@ -1,4 +1,5 @@
 """Tests for the Match class."""
+
 # pyright: reportMissingSuperCall=false
 from pathlib import Path
 from typing import Any
@@ -58,10 +59,10 @@ class Matchtests(TestCase):
             "active_teams": [cls.team0.name, cls.team1.name],
             "excluded_teams": {},
         }
-        cls.iterated_kwargs = team_dict | {
+        cls.iterated_kwargs: dict[str, Any] = team_dict | {
             "config": AlgobattleConfig(match=MatchConfig(problem="TestProblem", battle=Iterated.Config())),
         }
-        cls.averated_kwargs = team_dict | {
+        cls.averated_kwargs: dict[str, Any] = team_dict | {
             "config": AlgobattleConfig(match=MatchConfig(problem="TestProblem", battle=Averaged.Config())),
         }
         cls.teams = TeamHandler([cls.team0, cls.team1])

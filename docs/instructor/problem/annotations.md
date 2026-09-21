@@ -20,7 +20,6 @@ type aliases, which basically just are variables but for types. For example, con
 
 ```py
 class Example(InstanceModel):
-
     edges: list[tuple[int, int]]
     matchings: list[set[tuple[int, int]]]
 ```
@@ -35,8 +34,8 @@ version and how explicit you want (and have) to be, but they all do the same thi
     Edge = tuple[int, int]
     Matching = set[Edge]
 
-    class Example(InstanceModel):
 
+    class Example(InstanceModel):
         edges: list[Edge]
         matchings: list[Matching]
     ```
@@ -47,8 +46,8 @@ version and how explicit you want (and have) to be, but they all do the same thi
     Edge: TypeAlias = tuple[int, int]
     Matching: TypeAlias = set[Edge]
 
-    class Example(InstanceModel):
 
+    class Example(InstanceModel):
         edges: list[Edge]
         matchings: list[Matching]
     ```
@@ -59,8 +58,8 @@ version and how explicit you want (and have) to be, but they all do the same thi
     type Edge = tuple[int, int]
     type Matching = set[Edge]
 
-    class Example(InstanceModel):
 
+    class Example(InstanceModel):
         edges: list[Edge]
         matchings: list[Matching]
     ```
@@ -128,8 +127,8 @@ problem definition we can usually prevent them altogether by just reordering the
 
 ```py
 class Example(InstanceModel):
-
     some_attr: "CoolNumber"
+
 
 CoolNumber = int
 ```
@@ -155,9 +154,7 @@ would then specify this using its `Field` specifier like this
 
 ```py
 class Example(InstanceModel):
-
     positive_int: int = Field(gt=0)
-
 ```
 
 where the `gt` key tells Pydantic that it should validate this field as being greater than 0. This works great when you
@@ -172,13 +169,12 @@ several fields should be validated with a single `Field`.
 ```py
 PositiveInt = Annotated[int, Field(gt=0)]
 
-class Example(InstanceModel):
 
+class Example(InstanceModel):
     first: PositiveInt
     second: PositiveInt
     third: PositiveInt
     fourth: PositiveInt
-
 ```
 
 The Python standard library `annotated_types` also contains a collection of basic metadata types such as `Gt`, `Ge`,
@@ -189,7 +185,6 @@ The Python standard library `annotated_types` also contains a collection of basi
 
     ```py
     class Example(InstanceModel):
-
         first: int = Field(ge=3, lt=18)
         second: Annotated[int, Field(ge=3, lt=18)]
         third: Annotated[int, Ge(3), Lt(18)]
@@ -248,12 +243,10 @@ will be found in the instance or solution. Our example problem then becomes simp
 
 ```py
 class Instance(InstanceModel):
-
     numbers: list[int]
 
 
 class Solution(InstanceModel):
-
     biggest: Annotated[int, In(InstanceRef.numbers)]
 ```
 
@@ -303,6 +296,7 @@ the validation function also receives the value of a referenced attribute.
     def check_indentation(val: str, indent_level: int) -> str:
         if not val.startswith(" " * indent_level):
             raise ValueError
+
 
     IndentedLine = Annotated[str, AttributeReferenceValidator(check_indentation, InstanceRef.indentation)]
     ```

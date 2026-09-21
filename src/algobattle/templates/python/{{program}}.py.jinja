@@ -1,0 +1,41 @@
+"""Main module, will be run as the {{ program }}."""
+{% if instance_json or solution_json %}
+import json
+{% endif %}
+from pathlib import Path
+
+
+{% if program == "generator" %}
+max_size = int(Path("/input/max_size.txt").read_text())
+
+
+instance = ...
+{% if with_solution %}
+solution = ...
+{% endif %}
+
+
+{% if instance_json %}
+Path("/output/instance.json").write_text(json.dumps(instance))
+{% else %}
+ouput_path = Path("/output/instance")   # this is where you need to write the instance to
+{% endif %}
+{% else %}
+{% if instance_json %}
+instance = json.loads(Path("/input/instance.json").read_text())
+{% else %}
+instance_path = Path("/input/instance")     # this is where you can read the instance from
+{% endif %}
+
+
+solution = ...
+
+
+{% endif %}
+{% if program == "solver" or with_solution %}
+{% if solution_json %}
+Path("/output/solution.json").write_text(json.dumps(solution))
+{% else %}
+ouput_path = Path("/output/solution")   # this is where you need to write the solution to
+{% endif %}
+{% endif %}

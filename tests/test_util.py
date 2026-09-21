@@ -1,4 +1,5 @@
 """Tests for all util functions."""
+
 import unittest
 from math import inf
 

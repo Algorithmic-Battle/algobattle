@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "algobattle-base"
-version = "4.5.0"
+version = "4.3.5"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
@@ -16,7 +16,7 @@ dependencies = [
     { name = "typing-extensions" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "mdx-include" },
     { name = "mkdocs" },
@@ -31,18 +31,21 @@ requires-dist = [
     { name = "anyio", specifier = ">=4.15.1" },
     { name = "docker", specifier = ">=7.2.0" },
     { name = "jinja2", specifier = ">=3.1.6" },
-    { name = "mdx-include", marker = "extra == 'dev'", specifier = ">=1.4.2" },
-    { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.5.3" },
-    { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.5.3" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "pydantic", specifier = ">=2.13.5" },
-    { name = "pymdown-extensions", marker = "extra == 'dev'", specifier = ">=10.7" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.13.2" },
     { name = "tomlkit", specifier = ">=0.15.1" },
     { name = "typer", specifier = ">=0.27.2" },
     { name = "typing-extensions", specifier = ">=4.16.0" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mdx-include", specifier = ">=1.4.2" },
+    { name = "mkdocs", specifier = ">=1.5.3" },
+    { name = "mkdocs-material", specifier = ">=9.5.3" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
+    { name = "pymdown-extensions", specifier = ">=10.7" },
+    { name = "ruff", specifier = ">=0.16.8" },
+]
 
 [[package]]
 name = "annotated-doc"

@@ -38,9 +38,12 @@ Homepage = "https://algobattle.org"
 Documentation = "https://algobattle.org/docs"
 Repository = "https://github.com/Benezivas/algobattle"
 
-[project.optional-dependencies]
+[project.scripts]
+algobattle = "algobattle.cli:app"
+
+[dependency-groups]
 dev = [
-    "ruff>=0.13.2",
+    "ruff>=0.16.8",
     "mkdocs>=1.5.3",
     "mkdocs-material>=9.5.3",
     "pymdown-extensions>=10.7",
@@ -48,8 +51,6 @@ dev = [
     "mdx-include>=1.4.2",
 ]
 
-[project.scripts]
-algobattle = "algobattle.cli:app"
 
 [tool.uv.build-backend]
 module-name = "algobattle"

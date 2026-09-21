@@ -1,0 +1,8 @@
+FROM node
+
+WORKDIR /algobattle
+COPY . ./
+RUN npm ci
+
+WORKDIR /
+CMD [ "node", "/algobattle" ]

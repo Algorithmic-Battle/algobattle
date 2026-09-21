@@ -1,0 +1,50 @@
+// main class, will be executed as the {{ program }}
+package com.{{ team_normalized }};
+{% if program == "generator" %}
+import java.nio.file.Files;
+import java.nio.file.Path;
+{% endif %}
+
+
+class {{ program.capitalize() }} {
+    public static void main(String[] args) {
+{% if program == "generator" %}
+        try {
+            int max_size = Integer.parseInt(Files.readString(Path.of("/input/max_size.txt")));
+        } catch (Exception e) {
+            return;
+        }
+
+
+        Object instance = null;
+    {% if with_solution %}
+        Object solution = null;
+    {% endif %}
+
+
+    {% if instance_json %}
+        String instance_output = "/output/instance.json";   // this is where you need to write the generated instance to
+    {% else %}
+        String instance_output = "/output/instance";        // this is where you need to write the generated instance to
+    {% endif %}
+{% else %}
+    {% if instance_json %}
+        String instance_input = "/input/instance.json";     // this is where you can read the input instance from
+    {% else %}
+        String instance_input = "/input/instance";          // this is where you can read the input instance from
+    {% endif %}
+
+
+        Object solution = null;
+
+
+{% endif %}
+{% if program == "solver" or with_solution %}
+    {% if solution_json %}
+        String solution_output = "/output/solution.json";   // this is where you need to write the solution to
+    {% else %}
+        String solution_output = "/output/solution";        // this is where you need to write the solution to
+    {% endif %}
+{% endif %}
+    }
+}

@@ -1,0 +1,37 @@
+// main file, will be run as the {{ program}}
+import { readFileSync, writeFileSync } from "fs";
+
+{% if program == "generator" %}
+const max_size = parseInt(readFileSync("/input/max_size.txt", "utf8"));
+
+
+let instance = null;
+{% if with_solution %}
+let solution = null;
+{% endif %}
+
+
+{% if instance_json %}
+writeFileSync("/output/instance.json", JSON.stringify(instance));
+{% else %}
+const ouputPath = "/output/instance";   // this is where you need to write the instance to
+{% endif %}
+{% else %}
+{% if instance_json %}
+const instance = JSON.parse(readFileSync("/input/instance.json", "utf8"));
+{% else %}
+const instancePath = "/input/instance"; // this is where you can read the instance from
+{% endif %}
+
+
+let solution = null;
+
+
+{% endif %}
+{% if program == "solver" or with_solution %}
+{% if solution_json %}
+writeFileSync("/output/solution.json", JSON.stringify(solution));
+{% else %}
+const ouputPath = "/output/solution";   // this is where you need to write the solution to
+{% endif %}
+{% endif %}

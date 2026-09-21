@@ -1,0 +1,8 @@
+FROM python:3.11
+
+WORKDIR /algobattle
+COPY . ./
+RUN pip install .
+
+WORKDIR /
+CMD [ "python", "-m", "{{ program }}" ]

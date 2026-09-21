@@ -1,13 +1,13 @@
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["uv_build>=0.12.17,<0.13"]
+build-backend = "uv_build"
 
 [project]
 name = "algobattle-base"
-version = "4.3.4"
+version = "4.5.0"
 description = "The Algobattle lab course package."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 license = { text = "MIT" }
 authors = [
     { name = "Imogen Hergeth" },
@@ -23,14 +23,15 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "docker>=7.1.0",
-    "pydantic>=2.11.9",
-    "anyio>=4.11.0",
-    "typer>=0.19.2",
-    "typing-extensions>=4.15.0",
-    "tomlkit>=0.13.3",
+    "docker>=7.2.0",
+    "pydantic>=2.13.5",
+    "anyio>=4.15.1",
+    "typer>=0.27.2",
+    "typing-extensions>=4.16.0",
+    "tomlkit>=0.15.1",
     "jinja2>=3.1.6",
 ]
+import-names = ["algobattle"]
 
 [project.urls]
 Homepage = "https://algobattle.org"
@@ -49,6 +50,9 @@ dev = [
 
 [project.scripts]
 algobattle = "algobattle.cli:app"
+
+[tool.uv.build-backend]
+module-name = "algobattle"
 
 [tool.ruff]
 preview = true
@@ -84,17 +88,17 @@ select = [
     "RUF",
 ]
 ignore = [
-    "TRY003",
-    "PIE790",
-    "FBT001",
-    "FBT002",
-    "B027",
-    "FBT003",
-    "RUF001",
-    "RUF036",
-    "BLE001",
-    "DTZ005",
-    "ASYNC109",
+    "raise-vanilla-args",
+    "unnecessary-placeholder",
+    "boolean-type-hint-positional-argument",
+    "boolean-default-value-positional-argument",
+    "empty-method-without-abstract-decorator",
+    "boolean-positional-value-in-call",
+    "ambiguous-unicode-character-string",
+    "none-not-at-end-of-union",
+    "blind-except",
+    "call-datetime-now-without-tzinfo",
+    "async-function-with-timeout",
 ]
 
 [tool.ruff.lint.isort]
@@ -102,7 +106,7 @@ split-on-trailing-comma = false
 combine-as-imports = true
 
 [tool.pyright]
-exclude = [".venv", "docs"]
+exclude = [".venv", "docs", "**/node_modules", "**/__pycache__", "**/.*"]
 typeCheckingMode = "standard"
 disableBytesTypePromotions = true
 strictDictionaryInference = true

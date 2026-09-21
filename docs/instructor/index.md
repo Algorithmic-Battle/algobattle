@@ -13,6 +13,3 @@ or used as a reference as needed.
     [basic section](problem/problem_file.md) cover everything you need to know to get started and work with most
     types of problems. However, the framework is incredibly versatile and lets you create much more complex and out of
     the box problems than you might initially think. The following pages dive into more detail on everything else.
-
-- [Battle types](battles.md) discusses how you can customize the Algobattle match process itself by writing your own
-    battle types.

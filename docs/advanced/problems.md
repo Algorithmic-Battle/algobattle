@@ -9,7 +9,7 @@ teaches you how to get all that info from just the files you've already got in y
     project folder. This means it's mainly aimed at students who are trying to get more familiar with the course or a
     particular problem they're dealing with and course instructors who want to get an overview over how they work.
     If you instead are a course instructor looking to make a problem from scratch the
-    [instructor tutorial](../instructor/problem_basic.md) has more detailed info on that process.
+    [instructor tutorial](../instructor/problem/intro.md) has more detailed info on that process.
 
 ## Overall Structure
 

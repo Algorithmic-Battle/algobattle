@@ -39,7 +39,7 @@ It's a TOML document that contains two tables:
     the [project config](#project-config) documentation for details on what you can specify here. Defaults to only
     containing a `results` key set to the `results` path.
 
-## Project config files
+## Project config files {#project-config}
 
 These are the files normally called `algobattle.toml` that live in every Algobattle project folder. They can get quite
 big and offer a lot of room for customization. It's made up of several tables at keys `match`, `teams`, `problems`,

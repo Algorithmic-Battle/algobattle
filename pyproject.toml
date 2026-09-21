@@ -44,10 +44,10 @@ algobattle = "algobattle.cli:app"
 [dependency-groups]
 dev = [
     "ruff>=0.16.8",
-    "mkdocs>=1.5.3",
-    "mkdocs-material>=9.5.3",
-    "pymdown-extensions>=10.7",
-    "mkdocstrings[python]>=0.24.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.7",
+    "pymdown-extensions>=12.0.1",
+    "mkdocstrings[python]>=1.0.6",
     "mdx-include>=1.4.2",
 ]
 

@@ -10,7 +10,7 @@ we need to first come up with what those problems are and then how to tell Algob
 ## Using a Prebuilt Problem
 
 The fastest way to get up and running is to use one of the problems we've already developed in the
-[Algobattle Problems](https://github.com/Benezivas/algobattle-problems) repository. These contain everything you need to
+[Algobattle Problems](https://github.com/Algorithmic-Battle/algobattle-problems) repository. These contain everything you need to
 use them in a course and have been tested already. But of course half the fun is coming up with your own ideas and
 tailoring the problems to your students!
 

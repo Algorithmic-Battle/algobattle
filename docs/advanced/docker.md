@@ -183,7 +183,7 @@ to be as selective as possible and be executed as late as possible.
     a cache miss. This is great most of the time since we're downloading deterministic data like dependencies, but can
     cause issues if you expect to dynamically update data.
 
-### Building images yourself
+### Building images yourself {#building-images}
 
 Sometimes it's nice to build images yourself to debug them. You can find the full documentation on the
 [Docker build page](https://docs.docker.com/engine/reference/commandline/build/), but the basics aren't as complicated

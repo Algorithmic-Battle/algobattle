@@ -1,4 +1,5 @@
 """Utility types used to easily define Problems."""
+
 from collections.abc import Collection, Iterator
 from dataclasses import dataclass
 from functools import cache, cached_property
@@ -102,13 +103,11 @@ i16 = Annotated[int, at.Interval(ge=-(2**15), lt=2**15)]
 
 
 @overload
-def Gt(gt: SupportsGt) -> at.Gt:
-    ...
+def Gt(gt: SupportsGt) -> at.Gt: ...
 
 
 @overload
-def Gt(gt: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def Gt(gt: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def Gt(gt: SupportsGt | AttributeReference) -> at.Gt | AttributeReferenceValidator:
@@ -128,13 +127,11 @@ def Gt(gt: SupportsGt | AttributeReference) -> at.Gt | AttributeReferenceValidat
 
 
 @overload
-def Ge(ge: SupportsGe) -> at.Ge:
-    ...
+def Ge(ge: SupportsGe) -> at.Ge: ...
 
 
 @overload
-def Ge(ge: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def Ge(ge: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def Ge(ge: SupportsGe | AttributeReference) -> at.Ge | AttributeReferenceValidator:
@@ -154,13 +151,11 @@ def Ge(ge: SupportsGe | AttributeReference) -> at.Ge | AttributeReferenceValidat
 
 
 @overload
-def Lt(lt: SupportsLt) -> at.Lt:
-    ...
+def Lt(lt: SupportsLt) -> at.Lt: ...
 
 
 @overload
-def Lt(lt: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def Lt(lt: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def Lt(lt: SupportsLt | AttributeReference) -> at.Lt | AttributeReferenceValidator:
@@ -180,13 +175,11 @@ def Lt(lt: SupportsLt | AttributeReference) -> at.Lt | AttributeReferenceValidat
 
 
 @overload
-def Le(le: SupportsLe) -> at.Le:
-    ...
+def Le(le: SupportsLe) -> at.Le: ...
 
 
 @overload
-def Le(le: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def Le(le: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def Le(le: SupportsLe | AttributeReference) -> at.Le | AttributeReferenceValidator:
@@ -231,13 +224,11 @@ class Interval(GroupedMetadata):
 
 
 @overload
-def MultipleOf(multiple_of: SupportsDiv | SupportsMod) -> at.MultipleOf:
-    ...
+def MultipleOf(multiple_of: SupportsDiv | SupportsMod) -> at.MultipleOf: ...
 
 
 @overload
-def MultipleOf(multiple_of: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def MultipleOf(multiple_of: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def MultipleOf(
@@ -251,13 +242,11 @@ def MultipleOf(
 
 
 @overload
-def MinLen(min_length: Annotated[int, Ge(0)]) -> at.MinLen:
-    ...
+def MinLen(min_length: Annotated[int, Ge(0)]) -> at.MinLen: ...
 
 
 @overload
-def MinLen(min_length: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def MinLen(min_length: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def MinLen(min_length: Annotated[int, Ge(0)] | AttributeReference) -> at.MinLen | AttributeReferenceValidator:
@@ -269,13 +258,11 @@ def MinLen(min_length: Annotated[int, Ge(0)] | AttributeReference) -> at.MinLen 
 
 
 @overload
-def MaxLen(max_length: Annotated[int, Ge(0)]) -> at.MaxLen:
-    ...
+def MaxLen(max_length: Annotated[int, Ge(0)]) -> at.MaxLen: ...
 
 
 @overload
-def MaxLen(max_length: AttributeReference) -> AttributeReferenceValidator:
-    ...
+def MaxLen(max_length: AttributeReference) -> AttributeReferenceValidator: ...
 
 
 def MaxLen(max_length: Annotated[int, Ge(0)] | AttributeReference) -> at.MaxLen | AttributeReferenceValidator:
@@ -438,7 +425,7 @@ class DirectedGraph(InstanceModel):
         """The set of edges in this graph."""
         return set(self.edges)
 
-    @cache # ruff: ignore[cached-instance-method]
+    @cache  # ruff: ignore[cached-instance-method]
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         res = set[Vertex]()
@@ -474,7 +461,7 @@ class UndirectedGraph(DirectedGraph):
         """
         return set(self.edges) | {(v, u) for (u, v) in self.edges}
 
-    @cache # ruff: ignore[cached-instance-method]
+    @cache  # ruff: ignore[cached-instance-method]
     def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
         """The neighbors of a vertex."""
         # more efficient specialization
@@ -512,7 +499,7 @@ class EdgeWeights[Weight](DirectedGraph, BaseModel):
         """Iterate over all edges and their weights."""
         return zip(self.edges, self.edge_weights, strict=True)
 
-    @cache # ruff: ignore[cached-instance-method]
+    @cache  # ruff: ignore[cached-instance-method]
     def weight(self, edge: Edge | tuple[Vertex, Vertex]) -> Weight:
         """Returns the weight of an edge.
 

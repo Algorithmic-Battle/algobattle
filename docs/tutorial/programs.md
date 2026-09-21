@@ -127,11 +127,12 @@ When we look in there it's rather empty right now:
 
 ```py title="generator.py"
 """Main module, will be run as the generator."""
+
 import json
 from pathlib import Path
 
 
-max_size = int(Path("/input/max_size.txt").read_text()) # (1)!
+max_size = int(Path("/input/max_size.txt").read_text())  # (1)!
 
 
 instance = ...

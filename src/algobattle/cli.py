@@ -576,7 +576,7 @@ def package_problem(
     try:
         with console.status("Loading problem"):
             # we need to access the property so that it gets loaded
-            parsed_config.loaded_problem # ruff: ignore[useless-expression]
+            parsed_config.loaded_problem  # ruff: ignore[useless-expression]
     except ValueError as e:
         console.print(f"[error]Couldn't load the problem file[/]\nError: {e}")
         raise Abort from e

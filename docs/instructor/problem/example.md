@@ -91,36 +91,20 @@ We start with filling in the generator.
 
 ```py title="generator/generator.py"
 """Main module, will be run as the generator."""
+
 import json
 from pathlib import Path
 
 
 max_size = int(Path("/input/max_size.txt").read_text())
 
-instance = {
-    'height': 4,
-    'width': 3,
-    'items': [
-        [1, 3],
-        [4, 3],
-        [3, 3],
-        [3, 2],
-        [1, 3]
-    ]
-}
+instance = {"height": 4, "width": 3, "items": [[1, 3], [4, 3], [3, 3], [3, 2], [1, 3]]}
 
-solution = {
-    'packing': {
-        0: [0, 0, 'unrotated'],
-        3: [1, 0, 'unrotated'],
-        4: [1, 2, 'rotated']
-    }
-}
+solution = {"packing": {0: [0, 0, "unrotated"], 3: [1, 0, "unrotated"], 4: [1, 2, "rotated"]}}
 
 
 Path("/output/instance.json").write_text(json.dumps(instance))
 Path("/output/solution.json").write_text(json.dumps(solution))
-
 ```
 
 We made sure that the solution is not unique for the given instance
@@ -129,17 +113,14 @@ We next fill in the solver.
 
 ```py title="generator/solver.py"
 """Main module, will be run as the solver."""
+
 import json
 from pathlib import Path
 
 
 instance = json.loads(Path("/input/instance.json").read_text())
 
-solution = {
-    'packing': {
-        1: [0, 0, 'rotated']
-    }
-}
+solution = {"packing": {1: [0, 0, "rotated"]}}
 
 
 Path("/output/solution.json").write_text(json.dumps(solution))
@@ -161,6 +142,7 @@ and does a lot of the validation of the instance explicitly.
 
 ```python
 """The 2D Knapsack problem module."""
+
 from algobattle.problem import Problem, InstanceModel, SolutionModel, maximize
 from algobattle.util import Role, ValidationError
 from algobattle.types import u64
@@ -192,6 +174,7 @@ We can clean this code up by tightening up the annotations a bit.
 
 ```python
 """The 2D Knapsack problem module."""
+
 from pydantic import Field
 from typing import Annotated
 
@@ -210,7 +193,6 @@ class Instance(InstanceModel):
 
     height: u64 = Field(ge=1)
     width: u64 = Field(ge=1)
-
 
     items: list[point]
 
@@ -263,31 +245,26 @@ type checking, we implement these tests explicitly in the `validate_solution`
 method. For convenience, we import the `itertools` library.
 
 ```python
-    def validate_solution(self, instance: Instance, role: Role) -> None:
-        flattened_packing = []
-        for index, (pos_height, pos_width, rotation) in self.packing.items():
-            item_height = instance.items[index][0 if rotation == "unrotated" else 1]
-            item_width = instance.items[index][1 if rotation == "unrotated" else 0]
+def validate_solution(self, instance: Instance, role: Role) -> None:
+    flattened_packing = []
+    for index, (pos_height, pos_width, rotation) in self.packing.items():
+        item_height = instance.items[index][0 if rotation == "unrotated" else 1]
+        item_width = instance.items[index][1 if rotation == "unrotated" else 0]
 
-            height_endpoint = pos_height + item_height
-            width_endpoint = pos_width + item_width
-            flattened_packing.append(
-                (index, pos_height, height_endpoint, pos_width, width_endpoint)
-            )
+        height_endpoint = pos_height + item_height
+        width_endpoint = pos_width + item_width
+        flattened_packing.append((index, pos_height, height_endpoint, pos_width, width_endpoint))
 
-        if height_endpoint > instance.height or width_endpoint > instance.width:
-            raise ValidationError(
-                "Item extends the knapsack boundaries.",
-                detail=f"Item {index} was placed at position ({pos_height, pos_width}), extending the knapsack boundaries."
-            )
+    if height_endpoint > instance.height or width_endpoint > instance.width:
+        raise ValidationError(
+            "Item extends the knapsack boundaries.",
+            detail=f"Item {index} was placed at position ({pos_height, pos_width}), extending the knapsack boundaries.",
+        )
 
-        for item, other_item in itertools.combinations(flattened_packing, 2):
-            if item[1] < other_item[2] and item[2] > other_item[1]:
-                if item[3] < other_item[4] and item[4] > other_item[3]:
-                    raise ValidationError(
-                        "Two items overlap.",
-                        detail=f"Items {item[0]} and {other_item[0]} overlap."
-                    )
+    for item, other_item in itertools.combinations(flattened_packing, 2):
+        if item[1] < other_item[2] and item[2] > other_item[1]:
+            if item[3] < other_item[4] and item[4] > other_item[3]:
+                raise ValidationError("Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap.")
 ```
 
 We are almost done writing the problem class. The next step is to tell
@@ -414,6 +391,7 @@ scaffolding.
 
 ```py title="tests.py"
 """Tests for the 2D Knapsack problem."""
+
 import unittest
 
 from algobattle.util import Role
@@ -458,6 +436,7 @@ def test_knapsack_height_not_silly(self):
     with self.assertRaises(ValidationError):
         faulty_instance = Instance.model_validate({"height": 2, "width": 1, "items": [(1, 1)]})
         faulty_instance.validate_instance()
+
 
 # Sample test for the validate_solution method
 def test_item_overlap(self):
@@ -513,6 +492,7 @@ This is the final content of the `problem.py` that we have created.
 
 ```py title="problem.py"
 """The 2D Knapsack problem module."""
+
 import itertools
 from pydantic import Field
 from typing import Annotated, Literal
@@ -558,23 +538,18 @@ class Solution(SolutionModel[Instance]):
 
             height_endpoint = pos_height + item_height
             width_endpoint = pos_width + item_width
-            flattened_packing.append(
-                (index, pos_height, height_endpoint, pos_width, width_endpoint)
-            )
+            flattened_packing.append((index, pos_height, height_endpoint, pos_width, width_endpoint))
 
         if height_endpoint > instance.height or width_endpoint > instance.width:
             raise ValidationError(
                 "Item extends the knapsack boundaries.",
-                detail=f"Item {index} was placed at position ({pos_height, pos_width}), extending the knapsack boundaries."
+                detail=f"Item {index} was placed at position ({pos_height, pos_width}), extending the knapsack boundaries.",
             )
 
         for item, other_item in itertools.combinations(flattened_packing, 2):
             if item[1] < other_item[2] and item[2] > other_item[1]:
                 if item[3] < other_item[4] and item[4] > other_item[3]:
-                    raise ValidationError(
-                        "Two items overlap.",
-                        detail=f"Items {item[0]} and {other_item[0]} overlap."
-                    )
+                    raise ValidationError("Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap.")
 
     @maximize
     def score(self, instance: Instance, role: Role) -> float:

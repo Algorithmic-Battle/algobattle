@@ -12,7 +12,6 @@ like this
 
 ```py
 class Instance(InstanceModel):
-
     rectangles: list[tuple[int, int, int, int]]
 ```
 
@@ -26,7 +25,6 @@ from algobattle.util import BaseModel
 
 
 class Rectangle(BaseModel):
-
     x: int
     y: int
     width: int
@@ -34,7 +32,6 @@ class Rectangle(BaseModel):
 
 
 class Instance(InstanceModel):
-
     rectangles: list[Rectangle]
 ```
 
@@ -106,6 +103,7 @@ creating the Python object. We can use it either as the default value of the att
     ```py
     from pydantic import Field
 
+
     class Instance(InstanceModel):
         """An instance of the Some Example problem."""
 
@@ -167,7 +165,6 @@ directionless. Both graph's size is the number of vertices in it.
         def size(self) -> int:
             """A graph's size is the number of vertices in it."""
             return self.num_vertices
-
     ```
 
 !!! tip "Associated Annotation Types"
@@ -184,9 +181,7 @@ indexed with the type of the weights you want to use.
     would be done like this:
 
     ```py
-    class Instance(DirectedGraph, VertexWeights[str], EdgeWeights[float]):
-
-        ...
+    class Instance(DirectedGraph, VertexWeights[str], EdgeWeights[float]): ...
     ```
 
     Both are encoded as lists of the weights where the nth entry corresponds to the weight of the nth vertex or edge.
@@ -194,7 +189,6 @@ indexed with the type of the weights you want to use.
 
     ```py
     class Instance(DirectedGraph):
-
         vertex_weights: Annotated[list[str], SizeLen]
         edge_weights: Annotated[list[float], EdgeLen]
 
@@ -293,11 +287,11 @@ class Instance(DirectedGraph):
 class Solution(SolutionModel):
     """Solutions of the 3 Shortest Paths problem."""
 
-    paths: tuple[Path, Path, Path] # (2)!
+    paths: tuple[Path, Path, Path]  # (2)!
 
     @minimize
-    def score(self, role: Role) -> float:
-        ...
+    def score(self, role: Role) -> float: ...
+
 
 Problem(
     name="3 Shortest Paths",
@@ -332,16 +326,13 @@ class Solution(SolutionModel):
     paths: tuple[Path, Path, Path]
 
 
-def compare_each_path(
-    instance: Instance,
-    generator_solution: Solution,
-    solver_solution: Solution
-) -> float:
-    gen_lens = sorted(len(path) for path in generator_solution.paths) # (1)!
+def compare_each_path(instance: Instance, generator_solution: Solution, solver_solution: Solution) -> float:
+    gen_lens = sorted(len(path) for path in generator_solution.paths)  # (1)!
     sol_lens = sorted(len(path) for path in solver_solution.paths)
-    ratios = [len(gen) / len(sol) for gen, sol in zip(gen_lens, sol_lens)] # (2)!
-    ratios = [min(1, max(0, num)) for num in ratios] # (3)!
-    return sum(ratios) / 3 # (4)!
+    ratios = [len(gen) / len(sol) for gen, sol in zip(gen_lens, sol_lens)]  # (2)!
+    ratios = [min(1, max(0, num)) for num in ratios]  # (3)!
+    return sum(ratios) / 3  # (4)!
+
 
 Problem(
     name="3 Shortest Paths",

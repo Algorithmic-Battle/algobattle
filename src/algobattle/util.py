@@ -2,6 +2,7 @@
 
 In particular, the base classes :class:`BaseModel`, :class:`Encodable`, :class:`EncodableModel`, and exception classes.
 """
+
 import json
 import sys
 from abc import ABC, abstractmethod

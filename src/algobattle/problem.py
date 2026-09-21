@@ -1,4 +1,5 @@
 """Module defining the Problem and Solution base classes and related objects."""
+
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -141,13 +142,11 @@ type ScoreFunction[I: Instance, S: Solution] = ScoreFunctionWithSol[I, S] | Scor
 
 
 @overload
-def default_score(instance: Instance, *, solution: Solution) -> float:
-    ...
+def default_score(instance: Instance, *, solution: Solution) -> float: ...
 
 
 @overload
-def default_score[S: Solution](instance: Instance, *, generator_solution: S, solver_solution: S) -> float:
-    ...
+def default_score[S: Solution](instance: Instance, *, generator_solution: S, solver_solution: S) -> float: ...
 
 
 def default_score[S: Solution](
@@ -205,8 +204,7 @@ class Problem:
         with_solution: Literal[True] = True,
         score_function: ScoreFunctionWithSol[I, S] = default_score,
         test_instance: I | None = None,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def __init__[I: Instance, S: Solution](
@@ -219,8 +217,7 @@ class Problem:
         with_solution: Literal[False],
         score_function: ScoreFunctionNoSol[I, S] = default_score,
         test_instance: I | None = None,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def __init__[I: Instance, S: Solution](
         self,
@@ -264,14 +261,12 @@ class Problem:
     _problems: ClassVar[dict[str, Self]] = {}
 
     @overload
-    def score[I: Instance](self, instance: I, *, solution: Solution[I]) -> float:
-        ...
+    def score[I: Instance](self, instance: I, *, solution: Solution[I]) -> float: ...
 
     @overload
     def score[I: Instance](
         self, instance: I, *, generator_solution: Solution[I], solver_solution: Solution[I]
-    ) -> float:
-        ...
+    ) -> float: ...
 
     def score[I: Instance](
         self,
@@ -341,7 +336,7 @@ class Problem:
             case [e]:
                 loaded: object = e.load()
                 if not isinstance(loaded, cls):
-                    raise ValueError( # ruff: ignore[type-check-without-type-error]
+                    raise ValueError(  # ruff: ignore[type-check-without-type-error]
                         f"The entrypoint '{name}' doesn't point to a problem but a {loaded.__class__.__qualname__}."
                     )
                 return loaded

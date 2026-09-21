@@ -1,4 +1,5 @@
 """Tests for the Match class."""
+
 # pyright: reportMissingSuperCall=false
 from pathlib import Path
 from typing import Any

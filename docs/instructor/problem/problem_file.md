@@ -125,8 +125,7 @@ class Instance(InstanceModel):
     numbers: list[int]
 
     @property
-    def size(self) -> int:
-        ...
+    def size(self) -> int: ...
 ```
 
 Here we create a Python class attribute named after the key we want in the json file, and give it a type annotation that
@@ -176,7 +175,8 @@ can fit in a 64-bit integer. This can be done very easily by using the Algobattl
 `algobattle.types` module. In our case we want `u64` for an unsigned 64-bit integer.
 
 ```py
-from algobattle.types import u64 # (1)!
+from algobattle.types import u64  # (1)!
+
 
 class Instance(InstanceModel):
     """Instances of Pairsum."""
@@ -184,9 +184,7 @@ class Instance(InstanceModel):
     numbers: list[u64]
 
     @property
-    def size(self) -> int:
-        ...
-
+    def size(self) -> int: ...
 ```
 
 1. Always remember to add imports at the top of the file for everything you use from an external module.
@@ -204,13 +202,14 @@ constraint that all the numbers are even we could add this:
 ```py
 from algobattle.util import ValidationError
 
+
 class Instance(InstanceModel):
     """Instances of Pairsum."""
 
     numbers: list[u64]
 
-    def validate_instance(self) -> None: # (1)!
-        super().validate_instance() # (1)!
+    def validate_instance(self) -> None:  # (1)!
+        super().validate_instance()  # (1)!
         for number in self.numbers:
             if number % 2 != 0:
                 raise ValidationError(
@@ -219,9 +218,7 @@ class Instance(InstanceModel):
                 )
 
     @property
-    def size(self) -> int:
-        ...
-
+    def size(self) -> int: ...
 ```
 
 1. The `validate_instance` method takes only the instance itself as an argument, and returns nothing.
@@ -258,7 +255,6 @@ class Instance(InstanceModel):
     @property
     def size(self) -> int:
         return len(self.numbers)
-
 ```
 
 There are many more things you can customize here, but this is all you need to know to get started. If you want to take
@@ -276,8 +272,7 @@ class Solution(SolutionModel[Instance]):
     indices: tuple[u64, u64, u64, u64]
 
     @maximize
-    def score(self, instance: Instance, role: Role) -> float:
-        ...
+    def score(self, instance: Instance, role: Role) -> float: ...
 ```
 
 But note that we're actually looking for four different indices into the list in the input, not just any four numbers.
@@ -292,8 +287,7 @@ class Solution(SolutionModel[Instance]):
     indices: Annotated[tuple[SizeIndex, SizeIndex, SizeIndex, SizeIndex], UniqueItems]
 
     @maximize
-    def score(self, instance: Instance, role: Role) -> float:
-        ...
+    def score(self, instance: Instance, role: Role) -> float: ...
 ```
 
 The first change is to use `SizeIndex` instead of a `u64`. This ensures that the numbers are valid indices into a list
@@ -325,8 +319,7 @@ class Solution(SolutionModel[Instance]):
             raise ValidationError("Solution elements don't have the same sum.")
 
     @maximize
-    def score(self, instance: Instance, role: Role) -> float:
-        ...
+    def score(self, instance: Instance, role: Role) -> float: ...
 ```
 
 Note that this is now called `validate_solution` and takes not only the solution itself, but also the instance it is

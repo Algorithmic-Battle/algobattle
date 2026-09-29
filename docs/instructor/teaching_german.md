@@ -19,7 +19,7 @@ Dokumentation](https://algobattle.org/docs).
 
 Das `algobattle`-Tool wurde seit 2019 am Lehr- und Forschungsgebiet Theoretische Informatik der RWTH Aachen University
 entwickelt und für den Einsatz im Rahmen eines Softwarepraktikums für
-Studierende des Bachelor Informatik entworfen. Obwohl die [Sammlung der von uns bereitgestellten Aufgaben](https://github.com/Benezivas/algobattle-problems)
+Studierende des Bachelor Informatik entworfen. Obwohl die [Sammlung der von uns bereitgestellten Aufgaben](https://github.com/Algorithmic-Battle/algobattle-problems)
 dies stark widerspiegelt, spricht nichts dagegen, das Tool für andere
 Studiengänge oder sogar für den Schulunterricht in der Oberstufe
 einzusetzen.
@@ -278,7 +278,7 @@ Fights zwischen `generator` und `solver` implementieren.
 ### Andere Arten von Aufgaben
 
 In den meisten unserer
-[Beispielaufgaben](https://github.com/Benezivas/algobattle-problems)
+[Beispielaufgaben](https://github.com/Algorithmic-Battle/algobattle-problems)
 sind Input und Output von `generator` und `solver` einfache
 json-Dateien, welche Text enthalten. Da die Schnittstelle allerdings
 beliebige Dateien- und Ordnerstrukturen zulässt, spricht nichts
@@ -321,7 +321,7 @@ speicherintensiv arbeiten.
 
 ### Weitere Ressourcen
 
-[Das Algobattle-Framework (Github)](https://github.com/Benezivas/algobattle)  
-[Sammlung von Problemen für Algobattle (Github)](https://github.com/Benezivas/algobattle-problems)  
-[Webframework für Algobattle (Github)](https://github.com/Benezivas/algobattle-web)  
+[Das Algobattle-Framework (Github)](https://github.com/Algorithmic-Battle/algobattle)  
+[Sammlung von Problemen für Algobattle (Github)](https://github.com/Algorithmic-Battle/algobattle-problems)  
+[Webframework für Algobattle (Github)](https://github.com/Algorithmic-Battle/algobattle-web)  
 [Technische Dokumentation](https://algobattle.org/docs)

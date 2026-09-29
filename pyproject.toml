@@ -36,7 +36,7 @@ import-names = ["algobattle"]
 [project.urls]
 Homepage = "https://algobattle.org"
 Documentation = "https://algobattle.org/docs"
-Repository = "https://github.com/Benezivas/algobattle"
+Repository = "https://github.com/Algorithmic-Battle/algobattle"
 
 [project.scripts]
 algobattle = "algobattle.cli:app"
@@ -57,7 +57,7 @@ module-name = "algobattle"
 
 [tool.ruff]
 preview = true
-line-length = 120
+line-length = 100
 exclude = ["docs/src"]
 
 [tool.ruff.lint]

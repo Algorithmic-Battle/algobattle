@@ -30,13 +30,13 @@ for detailed instructions on installation and usage.
 This repository only includes the core framework for executing an
 `Algorithmic Battle`. For a selection of concrete problems that you
 can use to play around with the framework, have a look at the
-[algobattle-problems](https://github.com/Benezivas/algobattle-problems)
+[algobattle-problems](https://github.com/Algorithmic-Battle/algobattle-problems)
 repository. These are problems that have been posed to students in
 some form over the past years.
 
 While the framework provides all essential tools to host a tournament
 yourself, e.g. in the form of a lab course, you may be interested in
-the [algobattle-web](https://github.com/Benezivas/algobattle-problems)
+the [algobattle-web](https://github.com/Algorithmic-Battle/algobattle-problems)
 project.  The `algobattle-web` project implements a webframework with
 which you are able to comfortably manage your students teams and their
 code, your problem files and their documentation as well as schedule

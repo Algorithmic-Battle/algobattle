@@ -21,7 +21,7 @@ A typical problem file looks something like this
 
 What exactly the problems we discuss here are about is not important for this guide. If you're still curious you can
 find them all in our
-[Algobattle problems](https://github.com/Benezivas/algobattle-problems/) repo with
+[Algobattle problems](https://github.com/Algorithmic-Battle/algobattle-problems/) repo with
 additional explanations. We will now go through this file and explain what each section does.
 
 ## The Instance Class

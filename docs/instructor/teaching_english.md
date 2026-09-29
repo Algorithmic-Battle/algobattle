@@ -20,7 +20,7 @@ documentation](https://algobattle.org/docs).
 The `algobattle`-tool has been developed since 2019 by the Theory
 Group of RWTH Aachen University for use in a software programming lab
 course in a bachelor of computer science.  Although this is reflected
-in the [collection of pre-made problems](https://github.com/Benezivas/algobattle-problems),
+in the [collection of pre-made problems](https://github.com/Algorithmic-Battle/algobattle-problems),
 nothing speaks against using this tool in other study courses of late
 high-school teaching.
 
@@ -258,7 +258,7 @@ abstractions of `generator`s and `solver`s fighting one another.
 
 ### Other Types of Tasks
 
-In most of our [sample tasks](https://github.com/Benezivas/algobattle-problems), the input
+In most of our [sample tasks](https://github.com/Algorithmic-Battle/algobattle-problems), the input
 and output of `generator`s and `solver`s are simple json-files
 containing text. The I/O specification does however allow for arbitrary
 file- and folder structures to be passed. Thus, other files such as
@@ -299,7 +299,7 @@ require a lot of it.
 ### Additional Resources
 
 [Official Website](https://algobattle.org)
-[algobattle-Framework (Github)](https://github.com/Benezivas/algobattle)  
-[Collection of problems for algobattle (Github)](https://github.com/Benezivas/algobattle-problems)  
-[Web-framework for algobattle (Github)](https://github.com/Benezivas/algobattle-web)  
+[algobattle-Framework (Github)](https://github.com/Algorithmic-Battle/algobattle)  
+[Collection of problems for algobattle (Github)](https://github.com/Algorithmic-Battle/algobattle-problems)  
+[Web-framework for algobattle (Github)](https://github.com/Algorithmic-Battle/algobattle-web)  
 [Technical Documentation](https://algobattle.org/docs)

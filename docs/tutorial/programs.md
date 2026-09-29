@@ -3,7 +3,7 @@
 ## Problems
 
 Now that we've got our project setup we can take a look at what we actually need to do: solve some problem. In this page
-we'll work with the [Pairsum problem](https://github.com/Benezivas/algobattle-problems/tree/main/problems/pairsum). It's
+we'll work with the [Pairsum problem](https://github.com/Algorithmic-Battle/algobattle-problems/tree/main/problems/pairsum). It's
 a nice and easy starting point to get familiar with things, but you can also jump right into things with the problem
 your course instructors gave you.
 
@@ -73,7 +73,7 @@ these is:
 ??? tip "Help us make Algobattle better"
     Some languages either have no templates or some very bare-bones ones. This is mainly just because we aren't familiar
     enough with every language to provide better support. If you want to help us out make Algobattle even more awesome
-    you can open an issue or submit a pull request on [our GitHub](https://github.com/Benezivas/algobattle) with a
+    you can open an issue or submit a pull request on [our GitHub](https://github.com/Algorithmic-Battle/algobattle) with a
     better template for your language.
 
 We can then rerun the project initialization step and also tell it what language we want to use, Python in this example.

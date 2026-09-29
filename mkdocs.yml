@@ -1,7 +1,7 @@
 site_name: Algobattle
 site_description: Algobattle framework, an interactive, easy to use computer science lab course
-repo_name: benezivas/algobattle
-repo_url: https://github.com/Benezivas/algobattle
+repo_name: Algorithmic-Battle/algobattle
+repo_url: https://github.com/Algorithmic-Battle/algobattle
 edit_uri: ""
 
 plugins:
@@ -99,12 +99,7 @@ markdown_extensions:
 
 
 extra_css:
-  - css/termynal.css
   - css/custom.css
-
-extra_javascript:
-  - js/termynal.js
-  - js/custom.js
 
 nav:
   - Home: index.md

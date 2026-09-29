@@ -193,7 +193,7 @@ structure with both keys being mandatory:
 ### `docker`
 : Contains various advanced Docker settings that are passed through to the Docker daemon without influencing Algobattle
 itself. You generally should not need to use these settings. If you are running into a problem you cannot solve without
-them, we recommend first opening an issue on [our GitHub](https://github.com/Benezivas/algobattle/issues) to see if
+them, we recommend first opening an issue on [our GitHub](https://github.com/Algorithmic-Battle/algobattle/issues) to see if
 we can add this functionality to Algobattle directly.
 
     !!! danger

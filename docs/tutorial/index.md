@@ -14,7 +14,7 @@ the Python language will make things a lot easier.
 If you're dying to get started coding then the full tutorial might be a bit long for you. Here's all the steps you need
 to get going, each also linking to corresponding part of the in depth tutorial.
 
-1. [Install everything we need](installation.md#installing-python)
+1. [Install everything we need](installation.md)
 
 2. Download the [problem spec file](getting_started.md#problem-spec-files) your course instructors gave you
 

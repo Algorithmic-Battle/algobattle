@@ -249,7 +249,9 @@ def MinLen(min_length: Annotated[int, Ge(0)]) -> at.MinLen: ...
 def MinLen(min_length: AttributeReference) -> AttributeReferenceValidator: ...
 
 
-def MinLen(min_length: Annotated[int, Ge(0)] | AttributeReference) -> at.MinLen | AttributeReferenceValidator:
+def MinLen(
+    min_length: Annotated[int, Ge(0)] | AttributeReference,
+) -> at.MinLen | AttributeReferenceValidator:
     """Implies minimum inclusive length, i.e. `len(value) >= min_length`."""
     if isinstance(min_length, AttributeReference):
         return AttributeReferenceValidator(validators.min_length_validator, min_length)
@@ -265,7 +267,9 @@ def MaxLen(max_length: Annotated[int, Ge(0)]) -> at.MaxLen: ...
 def MaxLen(max_length: AttributeReference) -> AttributeReferenceValidator: ...
 
 
-def MaxLen(max_length: Annotated[int, Ge(0)] | AttributeReference) -> at.MaxLen | AttributeReferenceValidator:
+def MaxLen(
+    max_length: Annotated[int, Ge(0)] | AttributeReference,
+) -> at.MaxLen | AttributeReferenceValidator:
     """Implies maximum inclusive length, i.e. `len(value) <= max_length`."""
     if isinstance(max_length, AttributeReference):
         # pydantic impl is currently bugged
@@ -316,7 +320,9 @@ class UniqueItems:
         return no_info_after_validator_function(_func, handler(source_type))
 
     @classmethod
-    def __get_pydantic_json_schema__(cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
+    def __get_pydantic_json_schema__(
+        cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler
+    ) -> JsonSchemaValue:
         schema = handler(core_schema)
         schema["uniqueItems"] = True
         return schema
@@ -384,7 +390,9 @@ class SizeLen:
     _validator = AttributeReferenceValidator(_func, InstanceRef.size)
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         return cls._validator.__get_pydantic_core_schema__(source_type, handler)
 
 
@@ -426,7 +434,9 @@ class DirectedGraph(InstanceModel):
         return set(self.edges)
 
     @cache  # ruff: ignore[cached-instance-method]
-    def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
+    def neighbors(
+        self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all"
+    ) -> set[Vertex]:
         """The neighbors of a vertex."""
         res = set[Vertex]()
         if direction in {"all", "outgoing"}:
@@ -451,7 +461,9 @@ class UndirectedGraph(DirectedGraph):
 
         edge_set = set(self.edges)
         if any(edge[::-1] in edge_set for edge in self.edges):
-            raise ValidationError("Undirected graph contains back and forth edges between two vertices.")
+            raise ValidationError(
+                "Undirected graph contains back and forth edges between two vertices."
+            )
 
     @cached_property
     def edge_set(self) -> set[tuple[Vertex, Vertex]]:
@@ -462,7 +474,9 @@ class UndirectedGraph(DirectedGraph):
         return set(self.edges) | {(v, u) for (u, v) in self.edges}
 
     @cache  # ruff: ignore[cached-instance-method]
-    def neighbors(self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all") -> set[Vertex]:
+    def neighbors(
+        self, vertex: Vertex, direction: Literal["all", "outgoing", "incoming"] = "all"
+    ) -> set[Vertex]:
         """The neighbors of a vertex."""
         # more efficient specialization
 
@@ -485,7 +499,9 @@ class EdgeLen:
     _validator = AttributeReferenceValidator(_func, InstanceRef.edges)
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         return cls._validator.__get_pydantic_core_schema__(source_type, handler)
 
 

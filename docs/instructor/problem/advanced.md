@@ -326,7 +326,9 @@ class Solution(SolutionModel):
     paths: tuple[Path, Path, Path]
 
 
-def compare_each_path(instance: Instance, generator_solution: Solution, solver_solution: Solution) -> float:
+def compare_each_path(
+    instance: Instance, generator_solution: Solution, solver_solution: Solution
+) -> float:
     gen_lens = sorted(len(path) for path in generator_solution.paths)  # (1)!
     sol_lens = sorted(len(path) for path in solver_solution.paths)
     ratios = [len(gen) / len(sol) for gen, sol in zip(gen_lens, sol_lens)]  # (2)!

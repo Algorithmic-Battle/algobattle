@@ -298,7 +298,9 @@ the validation function also receives the value of a referenced attribute.
             raise ValueError
 
 
-    IndentedLine = Annotated[str, AttributeReferenceValidator(check_indentation, InstanceRef.indentation)]
+    IndentedLine = Annotated[
+        str, AttributeReferenceValidator(check_indentation, InstanceRef.indentation)
+    ]
     ```
 
 ### Validation Context

@@ -69,7 +69,9 @@ class HikersInstance(InstanceModel):
     def validate_instance(self) -> None:
         super().validate_instance()
         if any(min_size > max_size for min_size, max_size in self.hikers):
-            raise ValidationError("One hiker's minimum group size is larger than their maximum group size.")
+            raise ValidationError(
+                "One hiker's minimum group size is larger than their maximum group size."
+            )
 ```
 
 This method contains further code that validates which inputs are allowable and which aren't. If you generate an

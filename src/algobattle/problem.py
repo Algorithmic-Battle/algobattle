@@ -9,7 +9,18 @@ from inspect import Parameter, Signature, signature
 from itertools import chain
 from math import inf, isnan
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Protocol, Self, cast, get_args, overload, runtime_checkable
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Literal,
+    Protocol,
+    Self,
+    cast,
+    get_args,
+    overload,
+    runtime_checkable,
+)
 
 from annotated_types import GroupedMetadata
 from pydantic import GetCoreSchemaHandler, ValidationInfo
@@ -21,7 +32,14 @@ from pydantic_core.core_schema import (
     with_info_wrap_validator_function,
 )
 
-from algobattle.util import Encodable, EncodableBase, EncodableModel, EncodableModelBase, Role, import_file_as_module
+from algobattle.util import (
+    Encodable,
+    EncodableBase,
+    EncodableModel,
+    EncodableModelBase,
+    Role,
+    import_file_as_module,
+)
 
 
 class Instance(Encodable, ABC):
@@ -146,7 +164,9 @@ def default_score(instance: Instance, *, solution: Solution) -> float: ...
 
 
 @overload
-def default_score[S: Solution](instance: Instance, *, generator_solution: S, solver_solution: S) -> float: ...
+def default_score[S: Solution](
+    instance: Instance, *, generator_solution: S, solver_solution: S
+) -> float: ...
 
 
 def default_score[S: Solution](
@@ -257,7 +277,15 @@ class Problem:
         self.test_instance = test_instance
         self._problems[name] = self
 
-    __slots__ = ("instance_cls", "min_size", "name", "score_function", "solution_cls", "test_instance", "with_solution")
+    __slots__ = (
+        "instance_cls",
+        "min_size",
+        "name",
+        "score_function",
+        "solution_cls",
+        "test_instance",
+        "with_solution",
+    )
     _problems: ClassVar[dict[str, Self]] = {}
 
     @overload
@@ -287,7 +315,9 @@ class Problem:
                 raise TypeError
             if TYPE_CHECKING:
                 assert isinstance(self.score_function, ScoreFunctionWithSol)
-            return self.score_function(instance, generator_solution=generator_solution, solver_solution=solver_solution)
+            return self.score_function(
+                instance, generator_solution=generator_solution, solver_solution=solver_solution
+            )
         else:
             if not (
                 isinstance(instance, self.instance_cls)
@@ -349,7 +379,9 @@ class Problem:
     @classmethod
     def available(cls) -> set[str]:
         """Returns the names of all available Problems."""
-        return set(chain(cls._problems.keys(), (e.name for e in entry_points(group="algobattle.problem"))))
+        return set(
+            chain(cls._problems.keys(), (e.name for e in entry_points(group="algobattle.problem")))
+        )
 
 
 ModelType = Literal["instance", "solution"]
@@ -423,7 +455,9 @@ class AttributeReferenceValidator:
     func: AttrValidatorFunction
     attribute: AttributeReference
 
-    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        self, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         schema = handler(source_type)
         info_arg = is_info_validator(self.func)
         if info_arg:
@@ -473,7 +507,9 @@ class InstanceSolutionModel(EncodableModelBase):
     """Base class for Instance and solution models."""
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source: type[BaseModel], handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source: type[BaseModel], handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         schema = handler(cls)
         try:
             model_type = "instance" if issubclass(cls, InstanceModel) else "solution"
@@ -481,11 +517,16 @@ class InstanceSolutionModel(EncodableModelBase):
             return schema
         if cls._validate_with_self(model_type):
 
-            def validate_with_self(input: object, validate: ValidatorFunctionWrapHandler, info: ValidationInfo) -> Self:
+            def validate_with_self(
+                input: object, validate: ValidatorFunctionWrapHandler, info: ValidationInfo
+            ) -> Self:
                 self: Self = validate(input)
                 if info.context is None or "self" not in info.context:
                     self = cast(
-                        Self, cls.model_validate(input, context=(info.context or {}) | {"self": self, model_type: self})
+                        Self,
+                        cls.model_validate(
+                            input, context=(info.context or {}) | {"self": self, model_type: self}
+                        ),
                     )
                 return self
 

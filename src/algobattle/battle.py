@@ -13,7 +13,17 @@ from inspect import isclass
 from itertools import count
 from pathlib import Path
 from types import EllipsisType
-from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, Protocol, Self, Unpack, overload
+from typing import (
+    TYPE_CHECKING,
+    Annotated,
+    Any,
+    ClassVar,
+    Literal,
+    Protocol,
+    Self,
+    Unpack,
+    overload,
+)
 
 from annotated_types import Ge
 from pydantic import (
@@ -137,7 +147,9 @@ class Fight(BaseModel):
             max_size=max_size,
             score=score,
             generator=ProgramRunInfo.from_result(generator, inline_output=inline_output),
-            solver=ProgramRunInfo.from_result(solver, inline_output=inline_output) if solver is not None else None,
+            solver=ProgramRunInfo.from_result(solver, inline_output=inline_output)
+            if solver is not None
+            else None,
         )
 
 
@@ -300,7 +312,9 @@ class FightHandler:
         )
         return gen_result, sol_result
 
-    def calculate_score(self, gen_result: GeneratorResult, sol_result: SolverResult | None) -> float:
+    def calculate_score(
+        self, gen_result: GeneratorResult, sol_result: SolverResult | None
+    ) -> float:
         """Calculates the score achieved by the solver in this fight.
 
         Both results need to contain all instance and/or solution data required.
@@ -333,7 +347,9 @@ class FightHandler:
             # and gen_result.solution that is created by the last check in the first "if"
             assert gen_result.solution is not None
             score = self.problem.score(
-                gen_result.instance, solver_solution=sol_result.solution, generator_solution=gen_result.solution
+                gen_result.instance,
+                solver_solution=sol_result.solution,
+                generator_solution=gen_result.solution,
             )
         else:
             score = self.problem.score(gen_result.instance, solution=sol_result.solution)
@@ -379,7 +395,9 @@ class Battle(BaseModel):
         """Type of battle that will be used."""
 
         @classmethod
-        def __get_pydantic_core_schema__(cls, source: _type, handler: GetCoreSchemaHandler) -> CoreSchema:
+        def __get_pydantic_core_schema__(
+            cls, source: _type, handler: GetCoreSchemaHandler
+        ) -> CoreSchema:
             # there's two bugs we need to catch:
             # 1. this function is called during the pydantic BaseModel metaclass's __new__, so the BattleConfig class
             # won't be ready at that point and be missing in the namespace
@@ -399,7 +417,9 @@ class Battle(BaseModel):
                 case _:
                     subclass_schema = tagged_union_schema(
                         choices={
-                            battle.Config.model_fields["type"].default: battle.Config.__pydantic_core_schema__
+                            battle.Config.model_fields[
+                                "type"
+                            ].default: battle.Config.__pydantic_core_schema__
                             for battle in Battle._battle_types.values()
                         },
                         discriminator="type",
@@ -410,11 +430,15 @@ class Battle(BaseModel):
             # into an unspecified dummy object. This wrap validator will efficiently and transparently act as a tagged
             # union when ignore_uninstalled is not set. If it is set it catches only the error of a missing tag, other
             # errors are passed through
-            def check_installed(val: object, handler: ValidatorFunctionWrapHandler, info: ValidationInfo) -> object:
+            def check_installed(
+                val: object, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
+            ) -> object:
                 try:
                     return handler(val)
                 except ValidationError as e:
-                    union_err = next(filter(lambda err: err["type"] == "union_tag_invalid", e.errors()), None)
+                    union_err = next(
+                        filter(lambda err: err["type"] == "union_tag_invalid", e.errors()), None
+                    )
                     if union_err is None:
                         raise
                     if info.context is not None and info.context.get("ignore_uninstalled", False):
@@ -425,7 +449,9 @@ class Battle(BaseModel):
                             }
                         else:
                             settings = {}
-                        return Battle.FallbackConfig.model_validate(val, context=info.context, **settings)
+                        return Battle.FallbackConfig.model_validate(
+                            val, context=info.context, **settings
+                        )
                     else:
                         passed = union_err["input"]["type"]
                         installed = ", ".join(b.name() for b in Battle._battle_types.values())
@@ -468,7 +494,9 @@ class Battle(BaseModel):
         for entrypoint in entry_points(group="algobattle.battle"):
             battle = entrypoint.load()
             if not (isclass(battle) and issubclass(battle, Battle)):
-                raise ValueError(f"Entrypoint {entrypoint.name} targets something other than a Battle type")
+                raise ValueError(
+                    f"Entrypoint {entrypoint.name} targets something other than a Battle type"
+                )
 
     @classmethod
     def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
@@ -503,7 +531,9 @@ class Battle(BaseModel):
         return cls.__name__
 
     @abstractmethod
-    async def run_battle(self, fight: FightHandler, config: _BattleConfig, min_size: int, ui: BattleUi) -> None:
+    async def run_battle(
+        self, fight: FightHandler, config: _BattleConfig, min_size: int, ui: BattleUi
+    ) -> None:
         """Executes one battle.
 
         Args:
@@ -549,7 +579,9 @@ class Iterated(Battle):
         cap: int
         note: str
 
-    async def run_battle(self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi) -> None:
+    async def run_battle(
+        self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi
+    ) -> None:
         """Execute an iterated battle.
 
         Incrementally tries to search for the highest n for which the solver is still able to solve instances.
@@ -580,7 +612,9 @@ class Iterated(Battle):
             while lower_bound <= upper_bound:
                 lower_bound = max(lower_bound, self.results[-1] + 1)
                 for size in sizes(lower_bound, upper_bound):
-                    ui.update_battle_data(self.UiData(reached=self.results, cap=upper_bound, note=note))
+                    ui.update_battle_data(
+                        self.UiData(reached=self.results, cap=upper_bound, note=note)
+                    )
                     result = await fight.run(size)
                     if result.generator.error and config.max_generator_errors != "unlimited":
                         gen_errors += 1
@@ -624,13 +658,17 @@ class Averaged(Battle):
     class UiData(Battle.UiData):
         round: int
 
-    async def run_battle(self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi) -> None:
+    async def run_battle(
+        self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi
+    ) -> None:
         """Execute an averaged battle.
 
         This simple battle type just executes `iterations` many fights after each other at size `instance_size`.
         """
         if config.instance_size < min_size:
-            raise ValueError(f"size {config.instance_size} is smaller than the smallest valid size, {min_size}.")
+            raise ValueError(
+                f"size {config.instance_size} is smaller than the smallest valid size, {min_size}."
+            )
         for i in range(config.num_fights):
             ui.update_battle_data(self.UiData(round=i + 1))
             await fight.run(config.instance_size)
@@ -711,13 +749,17 @@ class Improving(Battle):
     class UiData(Battle.UiData):
         round: int
 
-    async def run_battle(self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi) -> None:
+    async def run_battle(
+        self, fight: FightHandler, config: Config, min_size: int, ui: BattleUi
+    ) -> None:
         """Execute an improving battle.
 
         This simple battle type just executes `iterations` many fights after each other at size `instance_size`.
         """
         if config.instance_size < min_size:
-            raise ValueError(f"size {config.instance_size} is smaller than the smallest valid size, {min_size}.")
+            raise ValueError(
+                f"size {config.instance_size} is smaller than the smallest valid size, {min_size}."
+            )
         history = FightHistory(
             scores=config.scores,
             instances=config.instances,

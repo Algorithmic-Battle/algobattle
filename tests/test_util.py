@@ -53,7 +53,9 @@ class Utiltests(unittest.TestCase):
         for gen, sol, score in scores:
             self.assertEqual(
                 default_score(
-                    instance, generator_solution=DummySolution(val=gen), solver_solution=DummySolution(val=sol)
+                    instance,
+                    generator_solution=DummySolution(val=gen),
+                    solver_solution=DummySolution(val=sol),
                 ),
                 score,
             )

@@ -60,10 +60,14 @@ class Matchtests(TestCase):
             "excluded_teams": {},
         }
         cls.iterated_kwargs: dict[str, Any] = team_dict | {
-            "config": AlgobattleConfig(match=MatchConfig(problem="TestProblem", battle=Iterated.Config())),
+            "config": AlgobattleConfig(
+                match=MatchConfig(problem="TestProblem", battle=Iterated.Config())
+            ),
         }
         cls.averated_kwargs: dict[str, Any] = team_dict | {
-            "config": AlgobattleConfig(match=MatchConfig(problem="TestProblem", battle=Averaged.Config())),
+            "config": AlgobattleConfig(
+                match=MatchConfig(problem="TestProblem", battle=Averaged.Config())
+            ),
         }
         cls.teams = TeamHandler([cls.team0, cls.team1])
 
@@ -232,7 +236,11 @@ class Parsing(TestCase):
         path = Path(__file__).parent
         cls.problem_path = path / "testsproblem"
         cls.configs_path = path / "configs"
-        cls.teams = {"team_0": TeamInfo(generator=cls.problem_path / "generator", solver=cls.problem_path / "solver")}
+        cls.teams = {
+            "team_0": TeamInfo(
+                generator=cls.problem_path / "generator", solver=cls.problem_path / "solver"
+            )
+        }
 
     def test_no_cfg_default(self):
         with self.assertRaises(FileNotFoundError):

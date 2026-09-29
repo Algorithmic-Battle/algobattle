@@ -121,8 +121,12 @@ class ProgramIO:
     need to use a directory thats bound to one on the host machine.
     """
 
-    host_dir: ClassVar[Path | None] = Path(environ["ALGOBATTLE_IO_DIR"]) if "ALGOBATTLE_IO_DIR" in environ else None
-    parent_dir: ClassVar[Path | None] = Path("/algobattle/io") if "ALGOBATTLE_IO_DIR" in environ else None
+    host_dir: ClassVar[Path | None] = (
+        Path(environ["ALGOBATTLE_IO_DIR"]) if "ALGOBATTLE_IO_DIR" in environ else None
+    )
+    parent_dir: ClassVar[Path | None] = (
+        Path("/algobattle/io") if "ALGOBATTLE_IO_DIR" in environ else None
+    )
 
     def __init__(self) -> None:
         """Creates the needed temporary directories."""
@@ -157,7 +161,9 @@ class ProgramIO:
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, exc: type[BaseException] | None, val: BaseException | None, tb: TracebackType | None):
+    def __exit__(
+        self, exc: type[BaseException] | None, val: BaseException | None, tb: TracebackType | None
+    ):
         self._input.__exit__(exc, val, tb)
         self._output.__exit__(exc, val, tb)
 
@@ -299,13 +305,19 @@ class Program(ABC):
                 self.remove()
             finally:
                 raise BuildError(
-                    "Built image is too large.", detail=f"Size: {used_size}B, limit: {config.max_program_size}B."
+                    "Built image is too large.",
+                    detail=f"Size: {used_size}B, limit: {config.max_program_size}B.",
                 )
         return self
 
     @classmethod
     def _build_daemon_call(
-        cls, path: str, tag: str | None, timeout: float | None, dockerfile: str | None, build_kwargs: dict[str, Any]
+        cls,
+        path: str,
+        tag: str | None,
+        timeout: float | None,
+        dockerfile: str | None,
+        build_kwargs: dict[str, Any],
     ) -> DockerImage:
         image, _logs = cast(
             tuple[DockerImage, Iterator[Any]],
@@ -390,7 +402,9 @@ class Program(ABC):
             if ui is not None:
                 ui.start_program(self.role, specs.timeout)
             try:
-                runtime = await run_sync(self._run_daemon_call, container, specs.timeout, cancellable=True)
+                runtime = await run_sync(
+                    self._run_daemon_call, container, specs.timeout, cancellable=True
+                )
             except ExecutionError as e:
                 raise _WrappedException(e, e.runtime) from e
             finally:
@@ -399,12 +413,15 @@ class Program(ABC):
                     ui.stop_program(self.role, runtime)
         except APIError as e:
             raise _WrappedException(
-                DockerError("Docker APIError thrown while running container.", detail=str(e)), runtime
+                DockerError("Docker APIError thrown while running container.", detail=str(e)),
+                runtime,
             ) from e
 
         if battle_output:
             try:
-                decoded_battle_output = battle_output.decode(io.output / "battle_data", max_size, self.role)
+                decoded_battle_output = battle_output.decode(
+                    io.output / "battle_data", max_size, self.role
+                )
             except Exception as e:
                 raise _WrappedException(e, runtime) from e
         else:
@@ -443,7 +460,9 @@ class Program(ABC):
             if len(e.args) != 1 or not isinstance(e.args[0], ReadTimeoutError):
                 raise
             if self.config.strict_timeouts:
-                raise ExecutionTimeout("The docker container exceeded the time limit.", runtime=elapsed_time) from e
+                raise ExecutionTimeout(
+                    "The docker container exceeded the time limit.", runtime=elapsed_time
+                ) from e
             return elapsed_time
 
     def remove(self) -> None:
@@ -523,7 +542,9 @@ class Generator(Program):
                 )
 
                 try:
-                    instance = self.problem.instance_cls.decode(io.output / "instance", max_size, self.role)
+                    instance = self.problem.instance_cls.decode(
+                        io.output / "instance", max_size, self.role
+                    )
                 except EncodingError:
                     raise
                 except Exception as e:
@@ -535,10 +556,13 @@ class Generator(Program):
                 except ValidationError:
                     raise
                 except Exception as e:
-                    raise ValidationError("Unknown error thrown during instance validation.", detail=str(e)) from e
+                    raise ValidationError(
+                        "Unknown error thrown during instance validation.", detail=str(e)
+                    ) from e
                 if instance.size > max_size:
                     raise ValidationError(  # ruff: ignore[raise-within-try]
-                        "Instance is too large.", detail=f"Generated: {instance.size}, maximum: {max_size}"
+                        "Instance is too large.",
+                        detail=f"Generated: {instance.size}, maximum: {max_size}",
                     )
                 if self.problem.with_solution:
                     try:
@@ -548,13 +572,17 @@ class Generator(Program):
                     except EncodingError:
                         raise
                     except Exception as e:
-                        raise EncodingError("Unknown error thrown while decoding the solution.", detail=str(e)) from e
+                        raise EncodingError(
+                            "Unknown error thrown while decoding the solution.", detail=str(e)
+                        ) from e
                     try:
                         solution.validate_solution(instance, Role.generator)
                     except ValidationError:
                         raise
                     except Exception as e:
-                        raise ValidationError("Unknown error thrown during solution validation.", detail=str(e)) from e
+                        raise ValidationError(
+                            "Unknown error thrown during solution validation.", detail=str(e)
+                        ) from e
 
             except _WrappedException as e:
                 runtime = e.runtime
@@ -631,17 +659,23 @@ class Solver(Program):
                     set_cpus=set_cpus,
                 )
                 try:
-                    solution = self.problem.solution_cls.decode(io.output / "solution", max_size, self.role, instance)
+                    solution = self.problem.solution_cls.decode(
+                        io.output / "solution", max_size, self.role, instance
+                    )
                 except EncodingError:
                     raise
                 except Exception as e:
-                    raise EncodingError("Unexpected error thrown while decoding the solution.", detail=str(e)) from e
+                    raise EncodingError(
+                        "Unexpected error thrown while decoding the solution.", detail=str(e)
+                    ) from e
                 try:
                     solution.validate_solution(instance, Role.solver)
                 except ValidationError:
                     raise
                 except Exception as e:
-                    raise ValidationError("Unexpected error during solution validation.", detail=str(e)) from e
+                    raise ValidationError(
+                        "Unexpected error during solution validation.", detail=str(e)
+                    ) from e
 
             except _WrappedException as e:
                 runtime = e.runtime

@@ -16,7 +16,11 @@ from traceback import format_exception
 from types import ModuleType
 from typing import Any, LiteralString, Self, TypeVar
 
-from pydantic import BaseModel as PydandticBaseModel, ConfigDict, ValidationError as PydanticValidationError
+from pydantic import (
+    BaseModel as PydandticBaseModel,
+    ConfigDict,
+    ValidationError as PydanticValidationError,
+)
 
 
 class Role(StrEnum):
@@ -140,7 +144,12 @@ class RunningTimer:
 class AlgobattleBaseException(Exception):
     """Base exception class for errors used by the algobattle package."""
 
-    def __init__(self, message: LiteralString, *, detail: str | list[str] | list[dict[str, Any]] | None = None) -> None:
+    def __init__(
+        self,
+        message: LiteralString,
+        *,
+        detail: str | list[str] | list[dict[str, Any]] | None = None,
+    ) -> None:
         """Base exception class for errors used by the algobattle package.
 
         Args:
@@ -167,7 +176,9 @@ class BuildError(AlgobattleBaseException):
 class ExecutionError(AlgobattleBaseException):
     """Indicates that the program could not be executed successfully."""
 
-    def __init__(self, message: LiteralString, *, detail: str | None = None, runtime: float) -> None:
+    def __init__(
+        self, message: LiteralString, *, detail: str | None = None, runtime: float
+    ) -> None:
         """Indicates that the program could not be executed successfully.
 
         Args:
@@ -245,7 +256,9 @@ def import_file_as_module(path: Path, name: str) -> ModuleType:
         RuntimeError: If the file cannot be imported properly
     """
     if not path.is_file():
-        raise ValueError(f"'{path}' does not point to a python file or a proper parent folder of one.")
+        raise ValueError(
+            f"'{path}' does not point to a python file or a proper parent folder of one."
+        )
 
     try:
         spec = spec_from_file_location(name, path)

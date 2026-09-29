@@ -264,7 +264,9 @@ def validate_solution(self, instance: Instance, role: Role) -> None:
     for item, other_item in itertools.combinations(flattened_packing, 2):
         if item[1] < other_item[2] and item[2] > other_item[1]:
             if item[3] < other_item[4] and item[4] > other_item[3]:
-                raise ValidationError("Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap.")
+                raise ValidationError(
+                    "Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap."
+                )
 ```
 
 We are almost done writing the problem class. The next step is to tell
@@ -442,7 +444,9 @@ def test_knapsack_height_not_silly(self):
 def test_item_overlap(self):
     instance = Instance(height=1, width=1, items=[(1, 1), (1, 1)])
     with self.assertRaises(ValidationError):
-        faulty_solution = Solution.model_validate({"packing": {0: (0, 0, "unrotated"), 1: (0, 0, "unrotated")}})
+        faulty_solution = Solution.model_validate({
+            "packing": {0: (0, 0, "unrotated"), 1: (0, 0, "unrotated")}
+        })
         faulty_solution.validate_solution(instance, Role.generator)
 ```
 
@@ -538,7 +542,13 @@ class Solution(SolutionModel[Instance]):
 
             height_endpoint = pos_height + item_height
             width_endpoint = pos_width + item_width
-            flattened_packing.append((index, pos_height, height_endpoint, pos_width, width_endpoint))
+            flattened_packing.append((
+                index,
+                pos_height,
+                height_endpoint,
+                pos_width,
+                width_endpoint,
+            ))
 
         if height_endpoint > instance.height or width_endpoint > instance.width:
             raise ValidationError(
@@ -549,7 +559,9 @@ class Solution(SolutionModel[Instance]):
         for item, other_item in itertools.combinations(flattened_packing, 2):
             if item[1] < other_item[2] and item[2] > other_item[1]:
                 if item[3] < other_item[4] and item[4] > other_item[3]:
-                    raise ValidationError("Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap.")
+                    raise ValidationError(
+                        "Two items overlap.", detail=f"Items {item[0]} and {other_item[0]} overlap."
+                    )
 
     @maximize
     def score(self, instance: Instance, role: Role) -> float:

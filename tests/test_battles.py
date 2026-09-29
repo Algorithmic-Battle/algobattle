@@ -9,7 +9,16 @@ from typing import Any, Unpack, cast
 from unittest import IsolatedAsyncioTestCase, TestCase, main
 from uuid import uuid4
 
-from algobattle.battle import Battle, Fight, FightHandler, FightHistory, Improving, Iterated, ProgramRunInfo, RunKwargs
+from algobattle.battle import (
+    Battle,
+    Fight,
+    FightHandler,
+    FightHistory,
+    Improving,
+    Iterated,
+    ProgramRunInfo,
+    RunKwargs,
+)
 from algobattle.match import BattleObserver, EmptyUi
 from algobattle.program import GeneratorResult, Matchup, SolverResult, Team
 from algobattle.util import Encodable, ExceptionInfo, Role, TempDir
@@ -83,7 +92,12 @@ class TestHandler(FightHandler):
                     solver=ProgramRunInfo(error=ExceptionInfo.from_exception(RuntimeError())),
                 )
             case r:
-                f = Fight(score=r.value, max_size=max_size, generator=ProgramRunInfo(), solver=ProgramRunInfo())
+                f = Fight(
+                    score=r.value,
+                    max_size=max_size,
+                    generator=ProgramRunInfo(),
+                    solver=ProgramRunInfo(),
+                )
         self.battle.fights.append(f)
         return f
 
@@ -112,7 +126,10 @@ class ConstantHandler(FightHandler):
         with_results: bool = False,
     ) -> Any:
         f = Fight(
-            score=float(max_size <= self.size), max_size=max_size, generator=ProgramRunInfo(), solver=ProgramRunInfo()
+            score=float(max_size <= self.size),
+            max_size=max_size,
+            generator=ProgramRunInfo(),
+            solver=ProgramRunInfo(),
         )
         self.battle.fights.append(f)
         return f
@@ -140,7 +157,12 @@ class IteratedTests(IsolatedAsyncioTestCase):
         await self._expect_size(17_000)
 
     async def _expect_fights(
-        self, results: Iterable[Result], sizes: list[int], *, score: int | None = None, total: bool = False
+        self,
+        results: Iterable[Result],
+        sizes: list[int],
+        *,
+        score: int | None = None,
+        total: bool = False,
     ) -> Iterated:
         battle = Iterated()
         if not total:
@@ -171,13 +193,19 @@ class IteratedTests(IsolatedAsyncioTestCase):
         await self._expect_fights([succ, succ, succ, fail, succ], [1, 2, 6, 15, 7, 8])
 
     async def test_exit_before_cap_success(self) -> None:
-        await self._expect_fights([succ, succ, fail, succ, succ, succ], [1, 2, 6, 3, 4, 5], score=5, total=True)
+        await self._expect_fights(
+            [succ, succ, fail, succ, succ, succ], [1, 2, 6, 3, 4, 5], score=5, total=True
+        )
 
     async def test_exit_before_cap_fail(self) -> None:
-        await self._expect_fights([succ, succ, fail, succ, succ, fail], [1, 2, 6, 3, 4, 5], score=4, total=True)
+        await self._expect_fights(
+            [succ, succ, fail, succ, succ, fail], [1, 2, 6, 3, 4, 5], score=4, total=True
+        )
 
     async def test_exit_solver_fail(self) -> None:
-        await self._expect_fights([succ, succ, succ, fail, fail], [1, 2, 6, 15, 7], score=6, total=True)
+        await self._expect_fights(
+            [succ, succ, succ, fail, fail], [1, 2, 6, 15, 7], score=6, total=True
+        )
 
     async def test_exit_fail_fast(self) -> None:
         await self._expect_fights([succ, fail], [1, 2], score=1, total=True)
@@ -188,7 +216,10 @@ class IteratedTests(IsolatedAsyncioTestCase):
     async def test_exit_repeated_gen_fails(self) -> None:
         e = gen_err
         await self._expect_fights(
-            [succ, succ, succ, e, e, e, e, e], [1, 2, 6, 15, 31, 56, 92, 141], score=1000, total=True
+            [succ, succ, succ, e, e, e, e, e],
+            [1, 2, 6, 15, 31, 56, 92, 141],
+            score=1000,
+            total=True,
         )
 
     async def test_noexit_disconnected_gen_fails(self) -> None:
@@ -202,14 +233,19 @@ class TrackingHandler(FightHandler):
     """Fight handler that tracks the passed battle data."""
 
     def __init__(
-        self, battle: Improving, gen_res: Iterable[GeneratorResult], sol_res: Iterable[SolverResult | None]
+        self,
+        battle: Improving,
+        gen_res: Iterable[GeneratorResult],
+        sol_res: Iterable[SolverResult | None],
     ) -> None:
         self.battle = battle
         self.gen_res = iter(gen_res)
         self.sol_res = iter(sol_res)
         self.data: list[list[FightHistory.Fight]] = []
 
-    async def run(self, max_size: int, *, with_results: bool = False, **kwargs: Unpack[RunKwargs]) -> Any:
+    async def run(
+        self, max_size: int, *, with_results: bool = False, **kwargs: Unpack[RunKwargs]
+    ) -> Any:
         gen = kwargs.get("generator_battle_input")
         sol = kwargs.get("solver_battle_input")
         assert isinstance(gen, FightHistory)
@@ -250,17 +286,23 @@ class ImprovingTests(IsolatedAsyncioTestCase):
     def gen_res(instance: bool = True, solution: bool = True) -> GeneratorResult:
         return GeneratorResult(
             instance=TestInstance(semantics=True, extra=str(uuid4())) if instance else None,
-            solution=cast(Any, TestSolution(semantics=True, quality=True, extra=str(uuid4()))) if solution else None,
+            solution=cast(Any, TestSolution(semantics=True, quality=True, extra=str(uuid4())))
+            if solution
+            else None,
         )
 
     @staticmethod
     def sol_res(solution: bool = True) -> SolverResult:
         return SolverResult(
-            solution=cast(Any, TestSolution(semantics=True, quality=True, extra=str(uuid4()))) if solution else None,
+            solution=cast(Any, TestSolution(semantics=True, quality=True, extra=str(uuid4())))
+            if solution
+            else None,
         )
 
     async def test_first_fight_empty(self) -> None:
-        handler = await self.run_battle([self.gen_res()], [self.sol_res()], Improving.Config(num_fights=1))
+        handler = await self.run_battle(
+            [self.gen_res()], [self.sol_res()], Improving.Config(num_fights=1)
+        )
         self.assertEqual(len(handler.data), 1)
         self.assertEqual(len(handler.data[0]), 0)
 
@@ -271,7 +313,11 @@ class ImprovingTests(IsolatedAsyncioTestCase):
         self.assertEqual(len(handler.data), 3)
         for i, history in enumerate(handler.data):
             self.assertEqual(
-                history, [FightHistory.Fight(1, g, s) for (g, s) in zip(gen_res[:i], sol_res[:i], strict=True)]
+                history,
+                [
+                    FightHistory.Fight(1, g, s)
+                    for (g, s) in zip(gen_res[:i], sol_res[:i], strict=True)
+                ],
             )
 
     async def test_sol_none(self) -> None:
@@ -329,7 +375,9 @@ class FightHistoryEncoding(TestCase):
             yield from self._encode_role(target / str(uuid4()), Role.generator, roles)
             yield from self._encode_role(target / str(uuid4()), Role.solver, roles)
 
-    def _encode_role(self, target: Path, role: Role, roles: set[Role]) -> Iterable[tuple[int, Path, bool]]:
+    def _encode_role(
+        self, target: Path, role: Role, roles: set[Role]
+    ) -> Iterable[tuple[int, Path, bool]]:
         self.history.encode(target, role)
         for f in target.iterdir():
             self.assertIn(f.name, {"0", "1"})
@@ -341,7 +389,9 @@ class FightHistoryEncoding(TestCase):
             for num, folder, should_exist in self._encode_attr(target, "scores"):
                 self.assertEqual(folder.joinpath("score.txt").exists(), should_exist)
                 if should_exist:
-                    self.assertEqual(float(folder.joinpath("score.txt").read_text()), 0.5 if num == 0 else 1)
+                    self.assertEqual(
+                        float(folder.joinpath("score.txt").read_text()), 0.5 if num == 0 else 1
+                    )
 
     def test_encode_instance(self) -> None:
         first = self.history.history[0].generator.instance
@@ -362,7 +412,9 @@ class FightHistoryEncoding(TestCase):
             for num, folder, should_exist in self._encode_attr(target, "gen_sols"):
                 self.assertEqual(folder.joinpath("generator_solution.json").exists(), should_exist)
                 if should_exist:
-                    decoded = TestSolution.decode(folder / "generator_solution.json", 25, Role.generator, instance)
+                    decoded = TestSolution.decode(
+                        folder / "generator_solution.json", 25, Role.generator, instance
+                    )
                     self.assertEqual(decoded, first if num == 0 else second)
 
     def test_encode_solution(self) -> None:
@@ -374,7 +426,9 @@ class FightHistoryEncoding(TestCase):
             for num, folder, should_exist in self._encode_attr(target, "sol_sols"):
                 self.assertEqual(folder.joinpath("solver_solution.json").exists(), should_exist)
                 if should_exist:
-                    decoded = TestSolution.decode(folder / "solver_solution.json", 25, Role.generator, instance)
+                    decoded = TestSolution.decode(
+                        folder / "solver_solution.json", 25, Role.generator, instance
+                    )
                     self.assertEqual(decoded, first if num == 0 else second)
 
 
@@ -395,7 +449,9 @@ class ImprovingScoreTests(TestCase):
 
     def test_score_increasing(self) -> None:
         battle = Improving(fights=[self.fight(0), self.fight(0.5), self.fight(1)])
-        self.assertAlmostEqual(battle.score(Improving.Config()), (0.5 * 1.1 + 1.1**2) / (2.1 + 1.1**2))
+        self.assertAlmostEqual(
+            battle.score(Improving.Config()), (0.5 * 1.1 + 1.1**2) / (2.1 + 1.1**2)
+        )
 
     def test_score_dropoff(self) -> None:
         battle = Improving(fights=[self.fight(1), self.fight(0), self.fight(0)])

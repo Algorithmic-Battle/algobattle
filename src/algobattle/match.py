@@ -7,7 +7,18 @@ from datetime import datetime, timedelta
 from functools import cached_property
 from itertools import combinations
 from pathlib import Path
-from typing import Annotated, Any, ClassVar, Literal, Protocol, Self, TypedDict, TypeVar, cast, override
+from typing import (
+    Annotated,
+    Any,
+    ClassVar,
+    Literal,
+    Protocol,
+    Self,
+    TypedDict,
+    TypeVar,
+    cast,
+    override,
+)
 
 from anyio import CapacityLimiter, create_task_group
 from anyio.to_thread import current_default_thread_limiter
@@ -55,7 +66,9 @@ class MatchupStr:
         return cls(matchup.generator.name, matchup.solver.name)
 
     @classmethod
-    def __pydantic_get_core_schema__(cls, source: type[Self], handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __pydantic_get_core_schema__(
+        cls, source: type[Self], handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         def parse(val: str) -> Self:
             return cls(*val.split(" vs "))
 
@@ -142,7 +155,9 @@ class Match(BaseModel):
                 for matchup in teams.matchups:
                     battle = battle_cls()
                     self.battles[MatchupStr.make(matchup)] = battle
-                    tg.start_soon(self._run_battle, battle, matchup, problem, match_cpus, ui, limiter)
+                    tg.start_soon(
+                        self._run_battle, battle, matchup, problem, match_cpus, ui, limiter
+                    )
         return self
 
     def calculate_points(self) -> dict[str, float]:
@@ -190,7 +205,9 @@ class Match(BaseModel):
 
         return points
 
-    def format(self, *, indent: int | None = 2, error_detail: Literal["high", "low"] = "low") -> str:
+    def format(
+        self, *, indent: int | None = 2, error_detail: Literal["high", "low"] = "low"
+    ) -> str:
         """Nicely formats the match result into a json string."""
         match error_detail:
             case "high":
@@ -330,11 +347,15 @@ class TimeFloat:
     """
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source: type, handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source: type, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         def convert(val: float | timedelta) -> float:
             return val.total_seconds() if isinstance(val, timedelta) else val
 
-        return no_info_after_validator_function(convert, union_schema([handler(float), handler(timedelta)]))
+        return no_info_after_validator_function(
+            convert, union_schema([handler(float), handler(timedelta)])
+        )
 
 
 def parse_none(value: Any) -> Any | None:
@@ -350,7 +371,11 @@ WithNone = Annotated[T | None, AfterValidator(parse_none)]
 
 def _relativize_path(path: Path, info: ValidationInfo) -> Path:
     """If the passed path is relative to the current directory it gets relativized to the `base_path` instead."""
-    if info.context and isinstance(info.context.get("base_path", None), Path) and not path.is_absolute():
+    if (
+        info.context
+        and isinstance(info.context.get("base_path", None), Path)
+        and not path.is_absolute()
+    ):
         return info.context["base_path"] / path
     return path
 
@@ -374,7 +399,9 @@ class _Adapter:
         return cls(**kwargs)
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source: type, handler: GetCoreSchemaHandler) -> CoreSchema:
+    def __get_pydantic_core_schema__(
+        cls, source: type, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
         return no_info_after_validator_function(cls._construct, handler(cls._Args))
 
 
@@ -641,7 +668,9 @@ class ProjectConfig(BaseModel):
     def val_set_cpus(self) -> Self:
         """Validates that each battle that is being executed is assigned some cpu cores."""
         if isinstance(self.set_cpus, list) and self.parallel_battles > len(self.set_cpus):
-            raise ValueError("Number of parallel battles exceeds the number of set_cpu specifier strings.")
+            raise ValueError(
+                "Number of parallel battles exceeds the number of set_cpu specifier strings."
+            )
         else:
             return self
 
@@ -676,10 +705,14 @@ class AlgobattleConfig(BaseModel):
     @cached_property
     def loaded_problem(self) -> Problem:
         """The problem this config uses."""
-        return Problem.load(self.match.problem, self.problem.location if self.problem.location.is_file() else None)
+        return Problem.load(
+            self.match.problem, self.problem.location if self.problem.location.is_file() else None
+        )
 
     @classmethod
-    def from_file(cls, file: Path, *, ignore_uninstalled: bool = False, relativize_paths: bool = True) -> Self:
+    def from_file(
+        cls, file: Path, *, ignore_uninstalled: bool = False, relativize_paths: bool = True
+    ) -> Self:
         """Parses a config object from a toml file.
 
         Args:
@@ -696,7 +729,9 @@ class AlgobattleConfig(BaseModel):
         try:
             config_dict = tomllib.loads(file.read_text())
         except tomllib.TOMLDecodeError as e:
-            raise ValueError(f"The config file at {file} is not a properly formatted TOML file!\n{e}") from e
+            raise ValueError(
+                f"The config file at {file} is not a properly formatted TOML file!\n{e}"
+            ) from e
         context: dict[str, Any] = {"ignore_uninstalled": ignore_uninstalled}
         if relativize_paths:
             context["base_path"] = file.parent

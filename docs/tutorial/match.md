@@ -50,12 +50,12 @@ Algobattle is doing and what the interface is trying to tell us.
 
 ## Building programs
 
-The First part of a match is building every team's programs. Depending on how complicated they are this may take a
+The first part of a match is building every team's programs. Depending on how complicated they are this may take a
 little while. During this step Algobattle gets all the programs ready for execution, compiles and installs them, etc.
 
 ??? question "You can't just skip over what's actually happening!"
     Yes I can :wink:. The actual details of this are somewhat complicated if you're not familiar with Docker (and if
-    you are, you'll have already figured our what's going on) so we recommend skipping over this for now. We recommend
+    you are, you'll have already figured out what's going on) so we recommend skipping over this for now. We recommend
     skipping over the details here for now and if you still want to learn more later you can check out the
     [advanced guide on Docker](../advanced/docker.md#building-images).
 

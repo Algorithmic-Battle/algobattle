@@ -14,7 +14,7 @@ Algobattle website. On the specific problem's page you can then download an Algo
 file with the `.algo` extension. This file contains all the information we need.
 
 !!! info "A peek behind the curtain" Despite their very fancy looking extension, `.algo` files
-really just zip files with a few files inside. Algobattle uses these to set up your project folders
+really are just zip files with a few files inside. Algobattle uses these to set up your project folders
 for you, but it doesn't handle things very well if you feed it data that doesn't have that
 structure, so the file extension is there to remind you that you're not meant to process these files
 manually. If you're curious you can unzip them and take a look inside yourself.

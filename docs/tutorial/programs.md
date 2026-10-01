@@ -117,7 +117,7 @@ The important file here is `generator.py`, we need to put the code that we want 
     already filled out with the data we need so we can just leave it as is for now.
 
 ??? question "What's `Dockerfile`?"
-    This is the file that specified what Docker is supposed to do with our code. What exactly Docker does and what the
+    This is the file that specifies what Docker is supposed to do with our code. What exactly Docker does and what the
     Dockerfile says is rather complicated and not super important for us right now. It's explained in detail in the
     [Docker guide](../advanced/docker.md).
 
@@ -171,7 +171,7 @@ us to stick to some given upper limit of size of instance we make.
 The code then writes things to the output directory, but it doesn't just write the instance, it also writes a solution.
 It might seem weird at first, but many problems do require the generator to not only come up with an instance, but also
 solve it. This is to make sure that the instance does indeed have a solution. Otherwise, we could just make some list
-of numbers were no two pairs have the same sum and then always win no matter how good the other teams' solvers are!
+of numbers where no two pairs have the same sum and then always win no matter how good the other teams' solvers are!
 
 
 ### Writing the code
@@ -262,7 +262,7 @@ The solver takes an instance and should produce a solution for it. Similar to th
 `/input` and `/output` directory, but this time called `/input/instance.json` and `/output/solution.json` as you'd
 expect. Since we're already familiar with this I/O structure we can get right into writing the actual program.
 
-This will again widely vary based on how you choose to do things, We've got our rust example solver here:
+This will again vary widely based on how you choose to do things. We've got our rust example solver here:
 
 !!! example "Example solver"
     This solver just iterates over all possible combinations of four numbers in the input list and checks if they form

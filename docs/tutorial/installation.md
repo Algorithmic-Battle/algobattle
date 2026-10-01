@@ -63,7 +63,7 @@ For more examples and ideas, visit:
 
 ## Installing Algobattle
 
-Algobattle is a Python package and unfortunately Python version and depenency management is kind of
+Algobattle is a Python package and unfortunately Python version and dependency management is kind of
 a mess. Luckily there's a great tool called uv that solves all of those hassles for us. Throughout
 this tutorial, we'll show you the correct commands to use when you have it installed, but if you
 prefer to manage your Python setup yourself you can just install the `algobattle-base` package

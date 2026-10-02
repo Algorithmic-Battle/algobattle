@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let instance: Instance = from_str(&fs::read_to_string("/input/instance.json")?)?;
     let numbers = instance.numbers;
 
-    for indices in (0..numbers.len()).combinations(4) { // (3)!
+    for indices in (0..numbers.len()).permutations(4) { // (3)!
         let first = numbers[indices[0]] + numbers[indices[1]];
         let second = numbers[indices[2]] + numbers[indices[3]];
 

@@ -265,7 +265,7 @@ expect. Since we're already familiar with this I/O structure we can get right in
 This will again vary widely based on how you choose to do things. We've got our rust example solver here:
 
 !!! example "Example solver"
-    This solver just iterates over all possible combinations of four numbers in the input list and checks if they form
+    This solver just iterates over all possible permutations of four numbers in the input list and checks if they form
     a valid pair. It's horribly inefficient but will do for now :grin:
 
     ```rust title="main.rs"
@@ -276,7 +276,7 @@ This will again vary widely based on how you choose to do things. We've got our 
 
     2. And this how to serialize the output
 
-    3. Iterate over all possible combinations of four indices
+    3. Iterate over all possible permutations of four indices
 
     4. If the pairs have the same number we output them as the solutions
 

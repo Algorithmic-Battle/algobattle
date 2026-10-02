@@ -27,7 +27,7 @@ contains a selection of basic problems. We can install it with uv just like the 
 package:
 
 ```console
-uv tool install --with algobattle-problems algobattle-base
+uv tool install --with algobattle-problems algobattle-base==4.4.2
 ```
 
 ## Setting up the workspace

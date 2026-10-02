@@ -6,7 +6,8 @@ edit_uri: ""
 
 plugins:
   - search
-
+  - macros:
+      module_name: docs/macros
   - mkdocstrings:
       handlers:
         python:

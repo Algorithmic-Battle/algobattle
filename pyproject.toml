@@ -49,6 +49,7 @@ dev = [
     "pymdown-extensions>=12.1.0",
     "mkdocstrings[python]>=1.0.6",
     "mdx-include>=1.4.2",
+    "mkdocs-macros-plugin>=1.5.0",
 ]
 
 

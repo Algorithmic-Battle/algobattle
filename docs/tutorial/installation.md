@@ -83,7 +83,7 @@ whichever installation process and version you like.
 Then all we need to do is run this command:
 
 ```console
-uv tool install algobattle-base
+uv tool install algobattle-base==4.4.2
 ```
 
 This will take care of installing the correct Python version and all dependencies we need. It also

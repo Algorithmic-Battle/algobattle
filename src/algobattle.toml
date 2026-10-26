@@ -1,0 +1,32 @@
+[teams.team_0]
+generator = "./generator"
+solver = "./solver"
+
+[match]
+problem = "./problem.py"
+build_timeout = "00:10:00"
+strict_timeouts = false
+image_size = false
+
+[match.generator]
+timeout = 30
+space = 0
+cpus = 1
+
+[match.solver]
+timeout = 30
+space = 0
+cpus = 1
+
+[battle]
+type = "Iterated"
+rounds = 5
+maximum_size = 50_000
+exponent = 2
+minimum_score = 1
+
+[execution]
+points = 100
+parallel_battles = 1
+set_cpus = false
+mode = "testing"

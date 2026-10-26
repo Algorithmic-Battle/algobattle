@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import cached_property
 from itertools import combinations
+from math import floor
+from operator import itemgetter
 from pathlib import Path
 from typing import (
     Annotated,
@@ -174,7 +176,8 @@ class Match(BaseModel):
         """
         all_teams = self.active_teams + list(self.excluded_teams)
         num_matchups = len(all_teams) * (len(all_teams) - 1) / 2
-        points_per_matchup = len(all_teams) * self.config.project.points / num_matchups
+        total_points = self.config.project.points * len(all_teams)
+        points_per_matchup = total_points / num_matchups
         points = dict.fromkeys(all_teams, 0.0)
         for first, second in combinations(all_teams, 2):
             scores = {}
@@ -199,7 +202,16 @@ class Match(BaseModel):
             total_score = sum(scores.values())
             points[first] += points_per_matchup * (scores[first] / total_score)
             points[second] += points_per_matchup * (scores[second] / total_score)
-        return {team: round(score, 1) for team, score in points.items()}
+
+        rounded = {team: floor(score * 10) for team, score in points.items()}
+        undistributed = int(10 * total_points - sum(rounded.values()))
+        if undistributed != 0:
+            errors = {team: 10 * points[team] - rounded[team] for team in all_teams}
+            team_errors = sorted(errors.items(), key=itemgetter(1), reverse=True)
+            for team, _err in team_errors[:undistributed]:
+                rounded[team] += 1
+        return {team: score / 10 for team, score in rounded.items()}
+
 
     def format(
         self, *, indent: int | None = 2, error_detail: Literal["high", "low"] = "low"
@@ -233,8 +245,8 @@ class Match(BaseModel):
         battle_cls = Battle.all()[config.match.battle.type]
         match_dict = {
             "config": config,
-            "active_teams": logs["active_teams"],
-            "excluded_teams": logs["excluded_teams"],
+            "active_teams": logs.get("active_teams", []),
+            "excluded_teams": logs.get("excluded_teams", {}),
             "battles": {
                 MatchupStr.parse(matchup): battle_cls.model_validate(battle)
                 for matchup, battle in logs["battles"].items()

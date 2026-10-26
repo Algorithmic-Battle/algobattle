@@ -78,7 +78,7 @@ class MatchupStr:
     @model_serializer
     def __str__(self) -> str:
         if self.generator.find(" vs ") >= 0 or self.solver.find(" vs ") >= 0:
-            return f"\"{self.generator}\" vs \"{self.solver}\""
+            return f'"{self.generator}" vs "{self.solver}"'
         else:
             return f"{self.generator} vs {self.solver}"
 

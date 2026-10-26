@@ -66,17 +66,21 @@ class MatchupStr:
         return cls(matchup.generator.name, matchup.solver.name)
 
     @classmethod
-    def __pydantic_get_core_schema__(
-        cls, source: type[Self], handler: GetCoreSchemaHandler
-    ) -> CoreSchema:
-        def parse(val: str) -> Self:
+    def parse(cls, val: object) -> object:
+        """Parses a string into a MatchupStr object."""
+        if isinstance(val, str):
             return cls(*val.split(" vs "))
+        else:
+            return val
 
-        return no_info_after_validator_function(parse, handler(str))
+    _parse_validator = model_validator(mode="before")(parse)
 
     @model_serializer
     def __str__(self) -> str:
-        return f"{self.generator} vs {self.solver}"
+        if self.generator.find(" vs ") >= 0 or self.solver.find(" vs ") >= 0:
+            return f"\"{self.generator}\" vs \"{self.solver}\""
+        else:
+            return f"{self.generator} vs {self.solver}"
 
 
 class Match(BaseModel):

@@ -212,7 +212,6 @@ class Match(BaseModel):
                 rounded[team] += 1
         return {team: score / 10 for team, score in rounded.items()}
 
-
     def format(
         self, *, indent: int | None = 2, error_detail: Literal["high", "low"] = "low"
     ) -> str:

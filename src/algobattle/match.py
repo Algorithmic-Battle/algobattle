@@ -233,8 +233,8 @@ class Match(BaseModel):
         battle_cls = Battle.all()[config.match.battle.type]
         match_dict = {
             "config": config,
-            "active_teams": logs["active_teams"],
-            "excluded_teams": logs["excluded_teams"],
+            "active_teams": logs.get("active_teams", []),
+            "excluded_teams": logs.get("excluded_teams", {}),
             "battles": {
                 MatchupStr.parse(matchup): battle_cls.model_validate(battle)
                 for matchup, battle in logs["battles"].items()

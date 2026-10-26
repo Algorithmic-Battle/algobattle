@@ -168,42 +168,34 @@ class Match(BaseModel):
         The other teams each get points based on how well they did against each other team compared to how well that
         other team did against them.
         """
-        total_points_per_team = self.config.project.points
-        points = dict.fromkeys(self.active_teams + list(self.excluded_teams), 0.0)
-        if len(self.active_teams) == 0:
-            return points
-        if len(self.active_teams) == 1:
-            points[self.active_teams[0]] = total_points_per_team
-            return points
-
-        points_per_matchup = round(total_points_per_team / (len(self.active_teams) - 1), 1)
-
-        for first, second in combinations(self.active_teams, 2):
-            try:
-                first_res = self.battles[MatchupStr(second, first)]
-                second_res = self.battles[MatchupStr(first, second)]
-            except KeyError:
-                continue
-            total_score = max(0, first_res.score(self.config.match.battle)) + max(
-                0, second_res.score(self.config.match.battle)
-            )
-            if total_score == 0:
-                # Default values for proportions, assuming no team manages to solve anything
-                first_ratio = 0.5
-                second_ratio = 0.5
-            else:
-                first_ratio = first_res.score(self.config.match.battle) / total_score
-                second_ratio = second_res.score(self.config.match.battle) / total_score
-
-            points[first] += round(points_per_matchup * first_ratio, 1)
-            points[second] += round(points_per_matchup * second_ratio, 1)
-
-        # we need to also add the points each team would have gotten fighting the excluded teams
-        # each active team would have had one set of battles against each excluded team
-        for team in self.active_teams:
-            points[team] += points_per_matchup * len(self.excluded_teams)
-
-        return points
+        all_teams = self.active_teams + list(self.excluded_teams)
+        num_matchups = len(all_teams) * (len(all_teams) - 1) / 2
+        points_per_matchup = len(all_teams) * self.config.project.points / num_matchups
+        points = dict.fromkeys(all_teams, 0.0)
+        for first, second in combinations(all_teams, 2):
+            scores = {}
+            for gen, sol in [(first, second), (second, first)]:
+                if sol in self.excluded_teams:
+                    scores[sol] = 0
+                    continue
+                if gen in self.excluded_teams:
+                    scores[sol] = 1
+                    continue
+                try:
+                    result = self.battles[MatchupStr(gen, sol)]
+                except KeyError:
+                    # if the match is interrupted we assume that the missing matchups
+                    # are lost by the solver
+                    scores[sol] = 0
+                else:
+                    scores[sol] = max(0, result.score(self.config.match.battle))
+            if sum(scores.values()) == 0:
+                # normalize things so that the division doesn't raise
+                scores[first] = scores[second] = 1
+            total_score = sum(scores.values())
+            points[first] += points_per_matchup * (scores[first] / total_score)
+            points[second] += points_per_matchup * (scores[second] / total_score)
+        return {team: round(score, 1) for team, score in points.items()}
 
     def format(
         self, *, indent: int | None = 2, error_detail: Literal["high", "low"] = "low"

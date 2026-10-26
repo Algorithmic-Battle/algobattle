@@ -1,6 +1,7 @@
 """Tests for the Match class."""
 
 # pyright: reportMissingSuperCall=false
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 from unittest import IsolatedAsyncioTestCase, TestCase, main
@@ -19,6 +20,7 @@ from algobattle.match import (
     TeamInfo,
 )
 from algobattle.program import Matchup, Team, TeamHandler
+from algobattle.util import ExceptionInfo
 
 from .testsproblem.problem import TestProblem
 
@@ -83,7 +85,7 @@ class Matchtests(TestCase):
     def test_calculate_points_zero_rounds(self):
         """All teams get 0 points if no rounds have been fought."""
         match = Match(**self.iterated_kwargs)
-        self.assertEqual(match.calculate_points(), {self.team0.name: 0, self.team1.name: 0})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 100})
 
     def test_calculate_points_iterated_no_successful_round(self):
         """Two teams should get an equal amount of points if nobody solved anything."""
@@ -92,7 +94,7 @@ class Matchtests(TestCase):
         battle.results = [0]
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle
-        self.assertEqual(match.calculate_points(), {self.team0.name: 50, self.team1.name: 50})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 100})
 
     def test_calculate_points_iterated_draw(self):
         """Two teams should get an equal amount of points if both solved a problem equally well."""
@@ -101,7 +103,7 @@ class Matchtests(TestCase):
         battle.results = [20]
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle
-        self.assertEqual(match.calculate_points(), {self.team0.name: 50, self.team1.name: 50})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 100})
 
     def test_calculate_points_iterated_domination(self):
         """One team should get all points if it solved anything and the other team nothing."""
@@ -112,7 +114,7 @@ class Matchtests(TestCase):
         battle2.results = [0]
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle2
-        self.assertEqual(match.calculate_points(), {self.team0.name: 0, self.team1.name: 100})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 0, self.team1.name: 200})
 
     def test_calculate_points_iterated_one_team_better(self):
         """One team should get more points than the other if it performed better."""
@@ -123,7 +125,78 @@ class Matchtests(TestCase):
         battle2.results = [20]
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle2
-        self.assertEqual(match.calculate_points(), {self.team0.name: 66.7, self.team1.name: 33.3})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 133.3, self.team1.name: 66.7})
+
+    def test_calculate_points_four_teams_even(self):
+        """Each team gets its share of all points in a four-team tournament."""
+        team_names = ["0", "1", "2", "3"]
+        config = AlgobattleConfig(
+            match=MatchConfig(problem="TestProblem", battle=Iterated.Config()),
+            project=ProjectConfig(points=10),
+        )
+        match = Match(config=config, active_teams=team_names)
+        for first, second in combinations(team_names, 2):
+            for generator, solver in [(first, second), (second, first)]:
+                battle = Iterated()
+                battle.results = [0]
+                match.battles[MatchupStr(generator, solver)] = battle
+
+        points = match.calculate_points()
+        self.assertEqual(sum(points.values()), 40)
+        for team in team_names:
+            self.assertEqual(points[team], 10.0)
+
+    def test_calculate_points_four_teams_dominated(self):
+        """Each team gets its share of all points in a four-team tournament."""
+        team_names = ["0", "1", "2", "3"]
+        config = AlgobattleConfig(
+            match=MatchConfig(problem="TestProblem", battle=Iterated.Config()),
+            project=ProjectConfig(points=10),
+        )
+        match = Match(config=config, active_teams=team_names)
+        for first, second in combinations(team_names, 2):
+            for generator, solver in [(first, second), (second, first)]:
+                battle = Iterated()
+                battle.results = [1 if solver == "0" else 0]
+                match.battles[MatchupStr(generator, solver)] = battle
+
+        points = match.calculate_points()
+        self.assertEqual(sum(points.values()), 40.1)
+        for team in team_names:
+            if team == "0":
+                self.assertEqual(points[team], 20.0)
+            else:
+                self.assertEqual(points[team], 6.7)
+
+    def test_calculate_points_excluded_team_matches_always_losing_team(self):
+        """Excluded teams and teams that lose every matchup receive the same points."""
+        active_teams = ["0", "1", "2"]
+        excluded_team = "3"
+        config = AlgobattleConfig(
+            match=MatchConfig(problem="TestProblem", battle=Iterated.Config()),
+            project=ProjectConfig(points=10),
+        )
+        match = Match(
+            config=config,
+            active_teams=active_teams,
+            excluded_teams={excluded_team: ExceptionInfo.from_exception(RuntimeError())},
+        )
+
+        for first, second in combinations(active_teams, 2):
+            for generator, solver in [(first, second), (second, first)]:
+                battle = Iterated()
+                battle.results = [0 if solver == "2" else 1]
+                match.battles[MatchupStr(generator, solver)] = battle
+
+        points_per_match = 40 / 6
+        expected_points = {
+            "0": round(2.5 * points_per_match, 1),
+            "1": round(2.5 * points_per_match, 1),
+            "2": round(1.0 * points_per_match, 1),
+            "3": round(0.0 * points_per_match, 1),
+        }
+
+        self.assertEqual(match.calculate_points(), expected_points)
 
     def test_calculate_points_averaged_no_successful_round(self):
         """Two teams should get an equal amount of points if nobody solved anything."""
@@ -132,7 +205,7 @@ class Matchtests(TestCase):
         battle.fights = dummy_result(0, 0, 0)
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle
-        self.assertEqual(match.calculate_points(), {self.team0.name: 50, self.team1.name: 50})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 100})
 
     def test_calculate_points_averaged_draw(self):
         """Two teams should get an equal amount of points if both solved a problem equally well."""
@@ -141,7 +214,7 @@ class Matchtests(TestCase):
         battle.fights = dummy_result(0.5, 0.5, 0.5)
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle
-        self.assertEqual(match.calculate_points(), {self.team0.name: 50, self.team1.name: 50})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 100})
 
     def test_calculate_points_averaged_domination(self):
         """One team should get all points if it solved anything and the other team nothing."""
@@ -152,7 +225,7 @@ class Matchtests(TestCase):
         battle2.fights = dummy_result(1, 1, 1)
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle2
-        self.assertEqual(match.calculate_points(), {self.team0.name: 100, self.team1.name: 0})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 200, self.team1.name: 0})
 
     def test_calculate_points_averaged_one_team_better(self):
         """One team should get more points than the other if it performed better."""
@@ -163,7 +236,7 @@ class Matchtests(TestCase):
         battle2.fights = dummy_result(0.4, 0.4, 0.4)
         match.battles[self.matchup0_str] = battle
         match.battles[self.matchup1_str] = battle2
-        self.assertEqual(match.calculate_points(), {self.team0.name: 40, self.team1.name: 60})
+        self.assertEqual(match.calculate_points(), {self.team0.name: 80, self.team1.name: 120})
 
     # TODO: Add tests for remaining functions
 

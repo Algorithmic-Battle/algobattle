@@ -161,12 +161,8 @@ class Matchtests(TestCase):
                 match.battles[MatchupStr(generator, solver)] = battle
 
         points = match.calculate_points()
-        self.assertEqual(sum(points.values()), 40.1)
-        for team in team_names:
-            if team == "0":
-                self.assertEqual(points[team], 20.0)
-            else:
-                self.assertEqual(points[team], 6.7)
+        self.assertEqual(sum(points.values()), 40.0)
+        self.assertEqual(points, {"0": 20.0, "1": 6.7, "2": 6.7, "3": 6.6})
 
     def test_calculate_points_excluded_team_matches_always_losing_team(self):
         """Excluded teams and teams that lose every matchup receive the same points."""
@@ -188,12 +184,11 @@ class Matchtests(TestCase):
                 battle.results = [0 if solver == "2" else 1]
                 match.battles[MatchupStr(generator, solver)] = battle
 
-        points_per_match = 40 / 6
         expected_points = {
-            "0": round(2.5 * points_per_match, 1),
-            "1": round(2.5 * points_per_match, 1),
-            "2": round(1.0 * points_per_match, 1),
-            "3": round(0.0 * points_per_match, 1),
+            "0": 16.7,
+            "1": 16.7,
+            "2": 6.6,
+            "3": 0.0,
         }
 
         self.assertEqual(match.calculate_points(), expected_points)

@@ -3,6 +3,7 @@
 Provides a command line interface to start matches and observe them. See `battle --help` for further options.
 """
 
+import json
 import operator
 import shutil
 import sys
@@ -706,6 +707,48 @@ def package_programs(
             _package_program(name, info, Role.generator)
         if solver:
             _package_program(name, info, Role.solver)
+
+
+@app.command("points")
+def show_points(
+    *,
+    log_path: Annotated[
+        Path,
+        Argument(
+            exists=True, dir_okay=False, help="Path to a match log file to calculate points for."
+        ),
+    ],
+    config_path: Annotated[
+        Path,
+        Option(
+            "--config",
+            "-c",
+            exists=True,
+            help="Path to either a config file or a directory containing one.",
+        ),
+    ] = Path(),
+    override_points: Annotated[
+        int | None,
+        Option(
+            "--points", "-p", help="Override the points setting in the config file with this value."
+        ),
+    ] = None,
+) -> None:
+    """Calculates the points from a match log file and displays the leaderboard."""
+    config = AlgobattleConfig.from_file(config_path)
+    logs = json.loads(log_path.read_text())
+    match = Match.from_logs(config, logs)
+    if override_points is not None:
+        match.config.project.points = override_points
+    points = match.calculate_points()
+    leaderboard = Table(
+        Column("Team", justify="center"),
+        Column("Points", justify="right"),
+        title="[heading]Leaderboard",
+    )
+    for team, pts in sorted(points.items(), key=operator.itemgetter(1)):
+        leaderboard.add_row(team, f"{pts:.1f}")
+    console.print(Padding(leaderboard, (1, 0, 0, 0)))
 
 
 class TimerTotalColumn(ProgressColumn):

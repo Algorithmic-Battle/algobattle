@@ -227,6 +227,21 @@ class Match(BaseModel):
                 }
         return self.model_dump_json(exclude_defaults=True, indent=indent, exclude=exclude)
 
+    @classmethod
+    def from_logs(cls, config: AlgobattleConfig, logs: dict[str, Any]) -> Self:
+        """Parses a match result from a log file."""
+        battle_cls = Battle.all()[config.match.battle.type]
+        match_dict = {
+            "config": config,
+            "active_teams": logs["active_teams"],
+            "excluded_teams": logs["excluded_teams"],
+            "battles": {
+                MatchupStr.parse(matchup): battle_cls.model_validate(battle)
+                for matchup, battle in logs["battles"].items()
+            },
+        }
+        return cls.model_validate(match_dict)
+
 
 class Ui(BuildUi, Protocol):
     """Base class for a UI that observes a Match and displays its data.
